@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1e4a3b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JamiiSim">
+    <meta name="application-name" content="JamiiSim">
+    <meta name="msapplication-TileColor" content="#1e4a3b">
+    <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+    
+    <!-- PWA Icons -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231e4a3b'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E⚡%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231e4a3b'/%3E%3Ctext x='16' y='22' font-size='20' text-anchor='middle' fill='white' font-family='Arial'%3E⚡%3C/text%3E%3C/svg%3E">
+    <link rel="manifest" href="manifest.json">
+    
+    <title>JamiiSim - Customer Portal PWA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Install Prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
+            color: white;
+            padding: 1rem;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            z-index: 2000;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .install-prompt button {
+            background: white;
+            color: #1e4a3b;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Offline Banner */
+        .offline-banner {
+            background: #f59e0b;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Rest of your existing CSS here */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0b2b26 0%, #1e4a3b 50%, #2c7a5e 100%);
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-card h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e4a3b, #2c7a5e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #1e4a3b;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2edeb;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Offline indicator */
+        .online-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #2b7e5a;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            z-index: 1000;
+        }
+
+        .offline-status {
+            background: #c2410c;
+        }
+
+        @media (max-width: 768px) {
+            .install-prompt {
+                bottom: 10px;
+                left: 10px;
+                right: 10px;
+                padding: 0.75rem;
+            }
+            .install-prompt button {
+                padding: 6px 16px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<div id="installContainer"></div>
+
+<script>
+    // ==================== PWA INSTALL PROMPT ====================
+    let deferredPrompt = null;
+    let isOnline = navigator.onLine;
+
+    // Listen for install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showInstallPrompt();
+    });
+
+    function showInstallPrompt() {
+        const installContainer = document.getElementById('installContainer');
+        if (!installContainer) return;
+        
+        // Check if already installed or dismissed
+        if (localStorage.getItem('installPromptDismissed')) return;
+        
+        installContainer.innerHTML = `
+            <div class="install-prompt">
+                <div>
+                    <i class="fas fa-download"></i> <strong>Install JamiiSim App</strong>
+                    <p style="font-size: 0.7rem; margin-top: 4px;">Install for faster access and offline use</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button id="installAppBtn">Install</button>
+                    <button id="dismissInstallBtn" style="background: rgba(255,255,255,0.2); color: white;">Later</button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('installAppBtn')?.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted install');
+                }
+                deferredPrompt = null;
+            }
+            installContainer.innerHTML = '';
+            localStorage.setItem('installPromptDismissed', 'true');
+        });
+        
+        document.getElementById('dismissInstallBtn')?.addEventListener('click', () => {
+            installContainer.innerHTML = '';
+            localStorage.setItem('installPromptDismissed', 'true');
+        });
+    }
+
+    // Online/Offline detection
+    function updateOnlineStatus() {
+        isOnline = navigator.onLine;
+        const statusDiv = document.getElementById('onlineStatus');
+        if (statusDiv) {
+            statusDiv.className = `online-status ${isOnline ? '' : 'offline-status'}`;
+            statusDiv.innerHTML = isOnline ? '<i class="fas fa-wifi"></i> Online' : '<i class="fas fa-wifi-slash"></i> Offline Mode';
+        }
+        
+        if (!isOnline) {
+            showToast("You are offline. Using cached data.", false);
+        } else {
+            // Try to sync pending data when back online
+            syncPendingData();
+        }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+
+    // Sync pending data when back online
+    async function syncPendingData() {
+        const pendingTransfers = JSON.parse(localStorage.getItem('pendingTransfers') || '[]');
+        if (pendingTransfers.length > 0) {
+            showToast(`Syncing ${pendingTransfers.length} pending transfers...`);
+            for (const transfer of pendingTransfers) {
+                try {
+                    const result = await apiCall("updateUnits", { rowIndex: transfer.rowIndex, addUnits: transfer.units });
+                    if (result.success) {
+                        // Remove from pending
+                        const updated = pendingTransfers.filter(t => t.id !== transfer.id);
+                        localStorage.setItem('pendingTransfers', JSON.stringify(updated));
+                    }
+                } catch (e) {
+                    console.error("Sync failed:", e);
+                }
+            }
+            showToast("Sync completed!");
+            location.reload();
+        }
+    }
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(registration => {
+                console.log('ServiceWorker registered');
+                
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showToast("New version available! Refresh to update.");
+                        }
+                    });
+                });
+            }).catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
+
+    // Request notification permission
+    async function requestNotificationPermission() {
+        if ('Notification' in window) {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                console.log('Notification permission granted');
+            }
+        }
+    }
+
+    // Send push notification
+    function sendLocalNotification(title, body) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(title, { body: body, icon: '/icon-192.png' });
+        }
+    }
+
+    // Cache API data for offline use
+    async function cacheData(key, data) {
+        const cache = await caches.open('jamii-api-cache');
+        const response = new Response(JSON.stringify(data), {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        await cache.put(key, response);
+    }
+
+    async function getCachedData(key) {
+        const cache = await caches.open('jamii-api-cache');
+        const response = await cache.match(key);
+        if (response) {
+            return await response.json();
+        }
+        return null;
+    }
+
+    // ==================== TELEGRAM CONFIGURATION ====================
+    const TELEGRAM_BOT_TOKEN = "8786753893:AAEnCBeMrSPqAyrX-7PXXPuVHz79YrEwvZQ";
+    const TELEGRAM_BOT_USERNAME = "jamiisim2bot";
+    const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+    
+    const API_BASE_URL = "https://script.google.com/macros/s/AKfycbx-ggpKM1cMYW48ojsD3wuy8vkyJP4sLe31KDi4w8sF559e22i8ZvVFydnooGu4lnpQ/exec";
+    
+    let currentCustomer = null;
+    let customerTills = [];
+    let transferHistory = [];
+    let totalUnitsReceived = 0;
+    let transactionCount = 0;
+    let currentTab = "tills";
+    let mobileMenuOpen = false;
+    let customerTelegramId = null;
+    let customerTelegramUsername = null;
+    let isLoggingOut = false;
+    
+    function showToast(message, isError = false) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.background = isError ? '#fee2e2' : 'white';
+        toast.style.color = isError ? '#dc2626' : '#1e4a3b';
+        toast.style.borderLeft = isError ? '4px solid #dc2626' : '4px solid #2c7a5e';
+        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+        
+        // Also send push notification for important messages
+        if (!isError && message.includes("added") || message.includes("transfer")) {
+            sendLocalNotification("JamiiSim Update", message);
+        }
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return "";
+        return String(str).replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function normalizePhone(phone) {
+        if (!phone) return "";
+        let normalized = String(phone).replace(/\D/g, '');
+        if (normalized.startsWith('254')) normalized = normalized.substring(3);
+        else if (normalized.startsWith('0')) normalized = normalized.substring(1);
+        return normalized;
+    }
+    
+    async function apiCall(action, params = {}) {
+        let url = `${API_BASE_URL}?action=${action}`;
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null && params[key] !== "") {
+                url += `&${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
+            }
+        });
+        
+        try {
+            const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            
+            // Cache successful responses for offline use
+            if (action === 'getLines' || action === 'getTills') {
+                await cacheData(url, data);
+            }
+            
+            return data;
+        } catch (err) {
+            console.error("API Error:", err);
+            
+            // Try to get cached data when offline
+            if (!navigator.onLine) {
+                const cached = await getCachedData(url);
+                if (cached) {
+                    showToast("Using cached data (offline mode)", false);
+                    return cached;
+                }
+            }
+            
+            return { success: false, error: err.message };
+        }
+    }
+    
+    // ==================== TELEGRAM FUNCTIONS ====================
+    
+    async function sendTelegramMessage(chatId, message) {
+        if (!TELEGRAM_BOT_TOKEN) return { success: false, error: "No token" };
+        
+        try {
+            const response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            });
+            const data = await response.json();
+            return { success: data.ok, error: data.description };
+        } catch (err) {
+            console.error("Telegram API Error:", err);
+            return { success: false, error: err.message };
+        }
+    }
+    
+    async function getChatIdFromUsername(username) {
+        const cleanUsername = username.replace('@', '');
+        
+        try {
+            const response = await fetch(`${TELEGRAM_API_URL}/getUpdates`);
+            const data = await response.json();
+            
+            if (data.ok && data.result) {
+                for (const update of data.result) {
+                    const message = update.message || update.channel_post;
+                    if (message && message.chat) {
+                        const msgUsername = message.from?.username;
+                        const chatId = message.chat.id;
+                        
+                        if (msgUsername && msgUsername.toLowerCase() === cleanUsername.toLowerCase()) {
+                            return { success: true, chatId: chatId };
+                        }
+                    }
+                }
+            }
+            return { success: false, error: "User not found. Please send a message to @" + TELEGRAM_BOT_USERNAME + " first." };
+        } catch (err) {
+            return { success: false, error: err.message };
+        }
+    }
+    
+    function saveTelegramUsername(username, chatId) {
+        if (!currentCustomer) return false;
+        
+        const telegramData = {
+            username: username,
+            chatId: chatId,
+            updatedAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem(`telegram_${currentCustomer.phone}`, JSON.stringify(telegramData));
+        customerTelegramUsername = username;
+        customerTelegramId = chatId;
+        
+        return true;
+    }
+    
+    function getTelegramUsername() {
+        if (!currentCustomer) return null;
+        
+        const stored = localStorage.getItem(`telegram_${currentCustomer.phone}`);
+        if (stored) {
+            const data = JSON.parse(stored);
+            customerTelegramUsername = data.username;
+            customerTelegramId = data.chatId;
+            return data;
+        }
+        return null;
+    }
+    
+    async function notifyTransfer(tillNumber, units, newBalance, senderPhone) {
+        if (!customerTelegramId) return;
+        
+        const message = `
+🔔 <b>JamiiSim Network - Transfer Notification</b>
+        
+✅ <b>Transfer Received!</b>
+        
+📱 <b>Till Number:</b> ${tillNumber}
+📦 <b>Units Added:</b> +${units}
+💰 <b>New Balance:</b> ${newBalance} units
+👤 <b>From:</b> ${senderPhone || 'Administrator'}
+📅 <b>Date:</b> ${new Date().toLocaleString()}
+        
+Thank you for using JamiiSim Network!
+        `;
+        
+        await sendTelegramMessage(customerTelegramId, message);
+    }
+    
+    async function notifyLogin() {
+        if (!customerTelegramId) return;
+        
+        const message = `
+🔐 <b>JamiiSim Network - Login Alert</b>
+        
+👋 <b>Welcome back, ${currentCustomer.name}!</b>
+        
+📱 <b>Phone:</b> ${currentCustomer.phone}
+📅 <b>Login Time:</b> ${new Date().toLocaleString()}
+        
+If this wasn't you, please contact support immediately.
+        `;
+        
+        await sendTelegramMessage(customerTelegramId, message);
+    }
+    
+    async function sendTestMessage() {
+        if (!customerTelegramId) {
+            showToast("Please connect your Telegram account first", true);
+            return false;
+        }
+        
+        const testMsg = `
+🔔 <b>JamiiSim Test Notification</b>
+        
+This is a test message to confirm your Telegram connection is working properly.
+        
+✅ <b>Status:</b> Connected
+👤 <b>Account:</b> ${currentCustomer.name}
+📅 <b>Time:</b> ${new Date().toLocaleString()}
+        
+If you received this, your notifications are working!
+        `;
+        
+        const result = await sendTelegramMessage(customerTelegramId, testMsg);
+        
+        if (result.success) {
+            showToast("Test message sent to your Telegram!");
+        } else {
+            showToast("Failed to send: " + result.error, true);
+        }
+        
+        return result.success;
+    }
+    
+    // ==================== LOGIN SCREEN ====================
+    function renderLogin() {
+        // Add online status indicator
+        const statusHtml = `<div id="onlineStatus" class="online-status ${isOnline ? '' : 'offline-status'}"><i class="fas ${isOnline ? 'fa-wifi' : 'fa-wifi-slash'}"></i> ${isOnline ? 'Online' : 'Offline'}</div>`;
+        
+        return statusHtml + `
+            <div class="login-container">
+                <div class="login-card">
+                    <h2><i class="fab fa-telegram"></i> JamiiSim Portal</h2>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone Number</label>
+                        <input type="tel" id="customerPhone" placeholder="0712345678">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-key"></i> PIN (Last 4 digits of ID)</label>
+                        <input type="password" id="customerPin" placeholder="Enter PIN" maxlength="4">
+                    </div>
+                    <button class="btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Access Portal</button>
+                    <div id="loginError" style="color:#c2410c; text-align:center; margin-top:1rem;"></div>
+                    
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: #f0f4f2; border-radius: 16px;">
+                        <p style="font-size: 0.7rem; text-align: center; margin-bottom: 0.5rem;">
+                            <i class="fab fa-telegram"></i> <strong>Get Telegram Notifications!</strong>
+                        </p>
+                        <p style="font-size: 0.65rem; text-align: center;">
+                            1. Message <strong>@${TELEGRAM_BOT_USERNAME}</strong> on Telegram<br>
+                            2. Login here and go to Settings<br>
+                            3. Add your Telegram username
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    async function handleLogin() {
+        const phone = document.getElementById("customerPhone").value.trim();
+        const pin = document.getElementById("customerPin").value;
+        const errorDiv = document.getElementById("loginError");
+        
+        if (!phone || !pin) {
+            errorDiv.innerHTML = "Please enter phone number and PIN";
+            return;
+        }
+        
+        errorDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying...';
+        
+        const linesResult = await apiCall("getLines");
+        const customers = linesResult.lines || [];
+        
+        const customer = customers.find(c => normalizePhone(c.phone) === normalizePhone(phone));
+        
+        if (customer) {
+            const idString = String(customer.idNumber);
+            const idLast4 = idString.slice(-4);
+            
+            if (pin === idLast4) {
+                currentCustomer = customer;
+                await loadCustomerData();
+                
+                const telegramData = getTelegramUsername();
+                if (telegramData && telegramData.chatId) {
+                    await notifyLogin();
+                }
+                
+                renderDashboard();
+                showToast(`Welcome ${customer.name}!`);
+                return;
+            }
+        }
+        
+        errorDiv.innerHTML = "Invalid phone number or PIN";
+    }
+    
+    async function loadCustomerData() {
+        const tillsResult = await apiCall("getTills");
+        const allTills = tillsResult.tills || [];
+        customerTills = allTills.filter(t => normalizePhone(t.phone) === normalizePhone(currentCustomer.phone));
+        
+        const storedHistory = localStorage.getItem(`transfers_in_${currentCustomer.phone}`);
+        transferHistory = storedHistory ? JSON.parse(storedHistory) : [];
+        
+        totalUnitsReceived = transferHistory.reduce((sum, t) => sum + (t.units || 0), 0);
+        transactionCount = transferHistory.length;
+        
+        getTelegramUsername();
+    }
+    
+    function renderDashboard() {
+        const totalUnits = customerTills.reduce((sum, t) => sum + (t.units || 0), 0);
+        const activeTills = customerTills.filter(t => t.status === "active").length;
+        const statusHtml = `<div id="onlineStatus" class="online-status ${isOnline ? '' : 'offline-status'}"><i class="fas ${isOnline ? 'fa-wifi' : 'fa-wifi-slash'}"></i> ${isOnline ? 'Online' : 'Offline'}</div>`;
+        
+        const app = document.getElementById("app");
+        app.innerHTML = statusHtml + `
+            <div class="customer-portal">
+                <div class="portal-sidebar">
+                    <div class="sidebar-logo">
+                        <div class="sidebar-logo-icon">
+                            <i class="fab fa-telegram"></i>
+                        </div>
+                        <div class="sidebar-logo-text">
+                            <h2>JamiiSim</h2>
+                            <p>Customer Portal</p>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-nav">
+                        <ul>
+                            <li><button class="nav-btn ${currentTab === 'tills' ? 'active' : ''}" data-tab="tills"><i class="fas fa-cash-register"></i> <span>My Tills</span></button></li>
+                            <li><button class="nav-btn ${currentTab === 'transactions' ? 'active' : ''}" data-tab="transactions"><i class="fas fa-history"></i> <span>Transactions</span></button></li>
+                            <li><button class="nav-btn ${currentTab === 'transfer' ? 'active' : ''}" data-tab="transfer"><i class="fas fa-arrow-down"></i> <span>Transfer In</span></button></li>
+                            <li><button class="nav-btn ${currentTab === 'settings' ? 'active' : ''}" data-tab="settings"><i class="fab fa-telegram"></i> <span>Telegram Settings</span></button></li>
+                            <li><button class="nav-btn ${currentTab === 'statement' ? 'active' : ''}" data-tab="statement"><i class="fas fa-download"></i> <span>Statement</span></button></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="sidebar-footer">
+                        <button id="logoutBtnPortal"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+                    </div>
+                </div>
+                
+                <div class="portal-main">
+                    <div class="portal-header">
+                        <div class="header-content">
+                            <div class="welcome-section">
+                                <h1>Welcome, ${escapeHtml(currentCustomer.name)}</h1>
+                                <p>Manage your tills and get Telegram notifications</p>
+                                ${!isOnline ? '<span style="font-size: 0.7rem; background: #f59e0b; padding: 2px 8px; border-radius: 20px;">⚠️ Offline Mode - Using cached data</span>' : ''}
+                            </div>
+                            <div class="customer-profile-card">
+                                <div class="profile-avatar">
+                                    <i class="fas fa-user-circle"></i>
+                                </div>
+                                <div class="profile-details">
+                                    <h3>${escapeHtml(currentCustomer.name)}</h3>
+                                    <p><i class="fas fa-phone"></i> ${escapeHtml(currentCustomer.phone)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-card" data-tab="tills">
+                            <div class="stat-icon"><i class="fas fa-cash-register"></i></div>
+                            <div class="stat-number">${customerTills.length}</div>
+                            <div class="stat-label">Total Tills</div>
+                        </div>
+                        <div class="stat-card" data-tab="tills">
+                            <div class="stat-icon"><i class="fas fa-cubes"></i></div>
+                            <div class="stat-number">${totalUnits}</div>
+                            <div class="stat-label">Current Units</div>
+                        </div>
+                        <div class="stat-card" data-tab="transactions">
+                            <div class="stat-icon"><i class="fas fa-exchange-alt"></i></div>
+                            <div class="stat-number">${transactionCount}</div>
+                            <div class="stat-label">Transactions</div>
+                        </div>
+                        <div class="stat-card" data-tab="transactions">
+                            <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                            <div class="stat-number">${totalUnitsReceived}</div>
+                            <div class="stat-label">Units Received</div>
+                        </div>
+                    </div>
+                    
+                    <div class="content-area">
+                        <div id="tillsContent">${renderTillsContent()}</div>
+                        <div id="transactionsContent" style="display:none;">${renderTransactionsContent()}</div>
+                        <div id="transferContent" style="display:none;">${renderTransferForm()}</div>
+                        <div id="settingsContent" style="display:none;">${renderTelegramSettings()}</div>
+                        <div id="statementContent" style="display:none;">${renderStatementContent()}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        initMobileMenu();
+        
+        document.querySelectorAll('.nav-btn, .stat-card').forEach(el => {
+            el.addEventListener('click', () => {
+                const tab = el.dataset.tab;
+                if (tab) switchTab(tab);
+            });
+        });
+        
+        const logoutBtn = document.getElementById("logoutBtnPortal");
+        if (logoutBtn) {
+            const newLogoutBtn = logoutBtn.cloneNode(true);
+            logoutBtn.parentNode.replaceChild(newLogoutBtn, logoutBtn);
+            newLogoutBtn.addEventListener("click", handleLogout);
+        }
+        
+        const submitBtn = document.getElementById("submitTransferBtn");
+        if (submitBtn) {
+            const newSubmitBtn = submitBtn.cloneNode(true);
+            submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+            newSubmitBtn.addEventListener("click", handleTransferIn);
+        }
+        
+        const saveTelegramBtn = document.getElementById("saveTelegramBtn");
+        if (saveTelegramBtn) {
+            const newSaveBtn = saveTelegramBtn.cloneNode(true);
+            saveTelegramBtn.parentNode.replaceChild(newSaveBtn, saveTelegramBtn);
+            newSaveBtn.addEventListener("click", handleSaveTelegram);
+        }
+        
+        const testTelegramBtn = document.getElementById("testTelegramBtn");
+        if (testTelegramBtn) {
+            const newTestBtn = testTelegramBtn.cloneNode(true);
+            testTelegramBtn.parentNode.replaceChild(newTestBtn, testTelegramBtn);
+            newTestBtn.addEventListener("click", sendTestMessage);
+        }
+        
+        const downloadBtn = document.getElementById("downloadStatementBtn");
+        if (downloadBtn) {
+            const newDownloadBtn = downloadBtn.cloneNode(true);
+            downloadBtn.parentNode.replaceChild(newDownloadBtn, downloadBtn);
+            newDownloadBtn.addEventListener("click", downloadStatement);
+        }
+    }
+    
+    function renderTillsContent() {
+        if (customerTills.length === 0) {
+            return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No tills registered yet</div>';
+        }
+        
+        return `
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Till Number</th><th>Store</th><th>Units</th><th>Status</th><th>Created</th></tr></thead>
+                    <tbody>
+                        ${customerTills.map(till => `
+                            <tr>
+                                <td><strong>${escapeHtml(till.tillNumber)}</strong></td>
+                                <td>${escapeHtml(till.storeNumber)}</div>
+                                <td><span style="font-weight:700;">${till.units || 0}</span></div>
+                                <td>${till.status === "active" ? '<span class="badge-active">Active</span>' : '<span class="badge-inactive">Inactive</span>'}</div>
+                                <td>${till.dateCreated ? new Date(till.dateCreated).toLocaleDateString() : '-'}</div>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    function renderTransactionsContent() {
+        if (transferHistory.length === 0) {
+            return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No transactions yet</div>';
+        }
+        
+        return `
+            <div style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                <div style="background: linear-gradient(135deg, #1e4a3b, #0f3b2f); padding: 0.75rem 1rem; border-radius: 16px; color: white;">
+                    <div style="font-size: 1.3rem; font-weight: 700;">${totalUnitsReceived}</div>
+                    <div style="font-size: 0.7rem;">Total Units Received</div>
+                </div>
+                <div style="background: linear-gradient(135deg, #2c7a5e, #1e4a3b); padding: 0.75rem 1rem; border-radius: 16px; color: white;">
+                    <div style="font-size: 1.3rem; font-weight: 700;">${transactionCount}</div>
+                    <div style="font-size: 0.7rem;">Total Transactions</div>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Date</th><th>From</th><th>Units</th><th>Reason</th></tr></thead>
+                    <tbody>
+                        ${transferHistory.map(t => `
+                            <tr>
+                                <td>${new Date(t.date).toLocaleDateString()}</div>
+                                <td>${escapeHtml(t.fromPhone || 'Admin')}</div>
+                                <td><span class="badge-incoming">+${t.units}</span></div>
+                                <td>${escapeHtml(t.reason || '-')}</div>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+    
+    function renderTransferForm() {
+        if (customerTills.length === 0) {
+            return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No tills available</div>';
+        }
+        
+        return `
+            <div class="transfer-form">
+                <h3><i class="fas fa-arrow-down"></i> Transfer Units IN</h3>
+                <p style="text-align: center; margin-bottom: 1rem; font-size: 0.8rem; color: #5b6e69;">Add units to your till (Increases your balance)</p>
+                <select id="transferTill">
+                    <option value="">Select till...</option>
+                    ${customerTills.map(till => `
+                        <option value="${escapeHtml(till.tillNumber)}" data-current-units="${till.units || 0}" data-row="${till.rowIndex}">
+                            ${escapeHtml(till.tillNumber)} - Current: ${till.units || 0} units
+                        </option>
+                    `).join('')}
+                </select>
+                <input type="tel" id="senderPhone" placeholder="Sender Phone Number" value="ADMIN">
+                <input type="number" id="transferUnits" placeholder="Units to Add" min="1">
+                <input type="text" id="transferReason" placeholder="Reason (e.g., Top-up, Bonus)">
+                <button class="btn" id="submitTransferBtn"><i class="fas fa-plus-circle"></i> Add Units</button>
+                <div id="transferFeedback" class="feedback-message" style="display:none;"></div>
+                ${!isOnline ? '<p style="margin-top: 0.5rem; font-size: 0.7rem; color: #f59e0b;"><i class="fas fa-info-circle"></i> You are offline. Transfer will be saved and synced when online.</p>' : ''}
+            </div>
+        `;
+    }
+    
+    function renderTelegramSettings() {
+        const telegramData = getTelegramUsername();
+        const isConnected = telegramData && telegramData.chatId;
+        
+        return `
+            <div class="telegram-card">
+                <h3><i class="fab fa-telegram"></i> Telegram Notifications</h3>
+                <p>Connect your Telegram account to receive real-time notifications.</p>
+                
+                <div class="telegram-input-group">
+                    <input type="text" id="telegramUsername" placeholder="Your Telegram Username (e.g., @username)" value="${customerTelegramUsername || ''}">
+                    <button class="btn-telegram" id="saveTelegramBtn"><i class="fab fa-telegram"></i> Connect</button>
+                </div>
+                
+                <div class="telegram-status ${isConnected ? 'status-connected' : 'status-disconnected'}">
+                    <i class="fas ${isConnected ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    ${isConnected ? `Connected to @${customerTelegramUsername}` : 'Not connected.'}
+                </div>
+                
+                ${isConnected ? `
+                <div style="margin-top: 1rem;">
+                    <button class="btn-telegram" id="testTelegramBtn" style="background: #4a6741;"><i class="fas fa-paper-plane"></i> Send Test Message</button>
+                </div>
+                ` : ''}
+            </div>
+            
+            <div style="background: white; border-radius: 20px; padding: 1rem; margin-top: 1rem;">
+                <h4><i class="fas fa-info-circle"></i> How to connect:</h4>
+                <ol>
+                    <li>Open Telegram and search for <strong>@${TELEGRAM_BOT_USERNAME}</strong></li>
+                    <li>Start a chat and send <strong>/start</strong></li>
+                    <li>Copy your Telegram username (starts with @)</li>
+                    <li>Paste it above and click Connect</li>
+                </ol>
+            </div>
+            
+            <div style="background: white; border-radius: 20px; padding: 1rem; margin-top: 1rem;">
+                <h4><i class="fas fa-mobile-alt"></i> Install App</h4>
+                <p>You can install this app on your phone for faster access:</p>
+                <ul>
+                    <li><strong>Android:</strong> Chrome → Menu → "Add to Home Screen"</li>
+                    <li><strong>iPhone:</strong> Safari → Share → "Add to Home Screen"</li>
+                </ul>
+            </div>
+        `;
+    }
+    
+    function renderStatementContent() {
+        const totalUnits = customerTills.reduce((sum, t) => sum + (t.units || 0), 0);
+        
+        return `
+            <div class="transfer-form">
+                <h3><i class="fas fa-file-alt"></i> Account Statement</h3>
+                <div style="margin-bottom: 1rem; padding: 0.75rem; background: #f8fbf9; border-radius: 16px;">
+                    <p><strong>Name:</strong> ${escapeHtml(currentCustomer.name)}</p>
+                    <p><strong>Phone:</strong> ${escapeHtml(currentCustomer.phone)}</p>
+                    <p><strong>Tills:</strong> ${customerTills.length}</p>
+                    <p><strong>Current Units:</strong> ${totalUnits}</p>
+                    <p><strong>Units Received:</strong> ${totalUnitsReceived}</p>
+                    <p><strong>Transactions:</strong> ${transactionCount}</p>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>Till</th><th>Store</th><th>Units</th><th>Status</th></tr></thead>
+                        <tbody>
+                            ${customerTills.map(t => `<tr><td>${escapeHtml(t.tillNumber)}</td><td>${escapeHtml(t.storeNumber)}</td><td>${t.units || 0}</td><td>${t.status}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn" id="downloadStatementBtn" style="margin-top: 1rem;"><i class="fas fa-download"></i> Download Statement</button>
+            </div>
+        `;
+    }
+    
+    async function handleTransferIn() {
+        const tillSelect = document.getElementById("transferTill");
+        const selectedOption = tillSelect.options[tillSelect.selectedIndex];
+        const tillNumber = tillSelect.value;
+        const rowIndex = selectedOption?.dataset.row;
+        const currentUnits = parseInt(selectedOption?.dataset.currentUnits || 0);
+        const senderPhone = document.getElementById("senderPhone").value.trim();
+        const units = parseInt(document.getElementById("transferUnits").value);
+        const reason = document.getElementById("transferReason")?.value.trim() || "Unit top-up";
+        const feedback = document.getElementById("transferFeedback");
+        
+        if (!tillNumber) {
+            feedback.style.display = "block";
+            feedback.innerHTML = 'Please select a till';
+            feedback.className = "feedback-message feedback-error";
+            return;
+        }
+        if (!units || units <= 0) {
+            feedback.style.display = "block";
+            feedback.innerHTML = 'Please enter valid units to add';
+            feedback.className = "feedback-message feedback-error";
+            return;
+        }
+        
+        feedback.style.display = "block";
+        feedback.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
+        feedback.className = "feedback-message";
+        
+        // If offline, store in pending queue
+        if (!isOnline) {
+            const pendingTransfer = {
+                id: Date.now(),
+                rowIndex: rowIndex,
+                units: units,
+                tillNumber: tillNumber,
+                senderPhone: senderPhone,
+                reason: reason
+            };
+            const pending = JSON.parse(localStorage.getItem('pendingTransfers') || '[]');
+            pending.push(pendingTransfer);
+            localStorage.setItem('pendingTransfers', JSON.stringify(pending));
+            
+            // Update local balance
+            const tillIndex = customerTills.findIndex(t => t.tillNumber === tillNumber);
+            if (tillIndex !== -1) {
+                customerTills[tillIndex].units = (customerTills[tillIndex].units || 0) + units;
+            }
+            
+            const newBalance = currentUnits + units;
+            
+            const transferRecord = {
+                id: Date.now(),
+                tillNumber: tillNumber,
+                fromPhone: senderPhone || "SYSTEM",
+                toPhone: currentCustomer.phone,
+                units: units,
+                reason: reason,
+                date: new Date().toISOString(),
+                pending: true
+            };
+            
+            transferHistory.unshift(transferRecord);
+            localStorage.setItem(`transfers_in_${currentCustomer.phone}`, JSON.stringify(transferHistory));
+            
+            totalUnitsReceived = transferHistory.reduce((sum, t) => sum + (t.units || 0), 0);
+            transactionCount = transferHistory.length;
+            
+            feedback.innerHTML = `✓ Added ${units} units (Offline). Will sync when online. New balance: ${newBalance} units`;
+            feedback.className = "feedback-message feedback-success";
+            
+            document.getElementById("transferUnits").value = "";
+            document.getElementById("transferReason").value = "";
+            document.getElementById("transferTill").value = "";
+            
+            showToast(`Added ${units} units offline. Will sync when back online.`);
+            renderDashboard();
+            return;
+        }
+        
+        // Online - process normally
+        const updateRes = await apiCall("updateUnits", { rowIndex: parseInt(rowIndex), addUnits: units });
+        
+        if (updateRes.success) {
+            const tillIndex = customerTills.findIndex(t => t.tillNumber === tillNumber);
+            if (tillIndex !== -1) {
+                customerTills[tillIndex].units = (customerTills[tillIndex].units || 0) + units;
+            }
+            
+            const newBalance = currentUnits + units;
+            
+            const transferRecord = {
+                id: Date.now(),
+                tillNumber: tillNumber,
+                fromPhone: senderPhone || "SYSTEM",
+                toPhone: currentCustomer.phone,
+                units: units,
+                reason: reason,
+                date: new Date().toISOString()
+            };
+            
+            transferHistory.unshift(transferRecord);
+            localStorage.setItem(`transfers_in_${currentCustomer.phone}`, JSON.stringify(transferHistory));
+            
+            if (customerTelegramId) {
+                await notifyTransfer(tillNumber, units, newBalance, senderPhone);
+            }
+            
+            totalUnitsReceived = transferHistory.reduce((sum, t) => sum + (t.units || 0), 0);
+            transactionCount = transferHistory.length;
+            
+            feedback.innerHTML = `✓ Success! Added ${units} units. New balance: ${newBalance} units`;
+            feedback.className = "feedback-message feedback-success";
+            
+            document.getElementById("transferUnits").value = "";
+            document.getElementById("transferReason").value = "";
+            document.getElementById("transferTill").value = "";
+            
+            showToast(`Added ${units} units successfully!`);
+            renderDashboard();
+        } else {
+            feedback.innerHTML = `Failed: ${updateRes.error}`;
+            feedback.className = "feedback-message feedback-error";
+        }
+    }
+    
+    async function handleSaveTelegram() {
+        const username = document.getElementById("telegramUsername").value.trim();
+        
+        if (!username) {
+            showToast("Please enter your Telegram username", true);
+            return;
+        }
+        
+        const cleanUsername = username.replace('@', '');
+        showToast("Verifying Telegram username...");
+        
+        const result = await getChatIdFromUsername(cleanUsername);
+        
+        if (result.success && result.chatId) {
+            saveTelegramUsername(cleanUsername, result.chatId);
+            
+            const welcomeMsg = `🎉 Welcome to JamiiSim Telegram Notifications! Hello ${currentCustomer.name}, you will now receive real-time updates about unit transfers and login alerts.`;
+            await sendTelegramMessage(result.chatId, welcomeMsg);
+            
+            showToast(`✅ Connected! Welcome message sent to @${cleanUsername}`);
+            renderDashboard();
+        } else {
+            showToast(`❌ Could not verify. Please send a message to @${TELEGRAM_BOT_USERNAME} first`, true);
+        }
+    }
+    
+    function downloadStatement() {
+        const totalUnits = customerTills.reduce((sum, t) => sum + (t.units || 0), 0);
+        
+        let html = `
+            <!DOCTYPE html>
+            <html>
+            <head><title>Statement - ${currentCustomer.name}</title>
+            <style>
+                body { font-family: Arial; padding: 2rem; }
+                h1 { color: #1e4a3b; }
+                table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background: #1e4a3b; color: white; }
+            </style>
+            </head>
+            <body>
+                <h1>JamiiSim Network - Account Statement</h1>
+                <p><strong>Name:</strong> ${currentCustomer.name}</p>
+                <p><strong>Phone:</strong> ${currentCustomer.phone}</p>
+                <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+                <h3>Summary</h3>
+                <p>Tills: ${customerTills.length} | Units: ${totalUnits} | Received: ${totalUnitsReceived}</p>
+                <h3>Till Details</h3>
+                <table>
+                    <tr><th>Till</th><th>Store</th><th>Units</th><th>Status</th></tr>
+                    ${customerTills.map(t => `<tr><td>${t.tillNumber}</td><td>${t.storeNumber}</td><td>${t.units || 0}</td><td>${t.status}</td></td>`).join('')}
+                </table>
+                <h3>Transaction History</h3>
+                </table>
+                    <tr><th>Date</th><th>From</th><th>Units</th><th>Reason</th></tr>
+                    ${transferHistory.map(t => `<tr><td>${new Date(t.date).toLocaleString()}</td><td>${t.fromPhone}</td><td>+${t.units}</td><td>${t.reason}</td></tr>`).join('')}
+                </table>
+            </body>
+            </html>
+        `;
+        
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `JamiiSim_Statement_${currentCustomer.phone}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Statement downloaded!");
+    }
+    
+    function initMobileMenu() {
+        const existingToggle = document.querySelector('.mobile-menu-toggle');
+        const existingOverlay = document.querySelector('.mobile-overlay');
+        if (existingToggle) existingToggle.remove();
+        if (existingOverlay) existingOverlay.remove();
+        
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'mobile-menu-toggle';
+        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        toggleBtn.onclick = toggleMobileMenu;
+        document.body.appendChild(toggleBtn);
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'mobile-overlay';
+        overlay.onclick = closeMobileMenu;
+        document.body.appendChild(overlay);
+        
+        const sidebar = document.querySelector('.portal-sidebar');
+        if (sidebar) sidebar.classList.remove('open');
+    }
+    
+    function toggleMobileMenu() {
+        const sidebar = document.querySelector('.portal-sidebar');
+        const overlay = document.querySelector('.mobile-overlay');
+        const toggleBtn = document.querySelector('.mobile-menu-toggle');
+        
+        if (sidebar && overlay) {
+            if (mobileMenuOpen) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                mobileMenuOpen = false;
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('show');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+                mobileMenuOpen = true;
+            }
+        }
+    }
+    
+    function closeMobileMenu() {
+        const sidebar = document.querySelector('.portal-sidebar');
+        const overlay = document.querySelector('.mobile-overlay');
+        const toggleBtn = document.querySelector('.mobile-menu-toggle');
+        
+        if (sidebar && overlay) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+            if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            mobileMenuOpen = false;
+        }
+    }
+    
+    function switchTab(tab) {
+        currentTab = tab;
+        
+        document.querySelectorAll('[id$="Content"]').forEach(el => el.style.display = 'none');
+        document.getElementById(`${tab}Content`).style.display = 'block';
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            if (btn.dataset.tab === tab) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        if (window.innerWidth <= 768) closeMobileMenu();
+    }
+    
+    function handleLogout() {
+        isLoggingOut = true;
+        currentCustomer = null;
+        customerTills = [];
+        transferHistory = [];
+        customerTelegramId = null;
+        customerTelegramUsername = null;
+        sessionStorage.clear();
+        showToast("Logged out successfully");
+        renderLogin();
+        const loginBtn = document.getElementById("loginBtn");
+        if (loginBtn) {
+            const newLoginBtn = loginBtn.cloneNode(true);
+            loginBtn.parentNode.replaceChild(newLoginBtn, loginBtn);
+            newLoginBtn.addEventListener("click", handleLogin);
+        }
+    }
+    
+    function render() {
+        const app = document.getElementById("app");
+        if (currentCustomer && !isLoggingOut) {
+            renderDashboard();
+        } else {
+            isLoggingOut = false;
+            app.innerHTML = renderLogin();
+            const loginBtn = document.getElementById("loginBtn");
+            if (loginBtn) {
+                const newLoginBtn = loginBtn.cloneNode(true);
+                loginBtn.parentNode.replaceChild(newLoginBtn, loginBtn);
+                newLoginBtn.addEventListener("click", handleLogin);
+            }
+        }
+    }
+    
+    // Request notification permission on load
+    requestNotificationPermission();
+    updateOnlineStatus();
+    render();
+</script>
+</body>
+</html>
