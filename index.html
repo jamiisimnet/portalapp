@@ -3,778 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1e4a3b">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="JamiiSim">
-    <meta name="application-name" content="JamiiSim">
-    
-    <!-- PWA Icons -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231e4a3b'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E⚡%3C/text%3E%3C/svg%3E">
     <link rel="manifest" href="manifest.json">
-    
-    <title>JamiiSim - Customer Portal PWA</title>
+    <title>JamiiSim - Customer Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Install Prompt */
-        .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
-            color: white;
-            padding: 1rem;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            z-index: 2000;
-            animation: slideUp 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-
-        .install-prompt button {
-            background: white;
-            color: #1e4a3b;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Online Status */
-        .online-status {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: #2b7e5a;
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            z-index: 1000;
-        }
-
-        .offline-status {
-            background: #c2410c;
-        }
-
-        /* Login Container */
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0b2b26 0%, #1e4a3b 50%, #2c7a5e 100%);
-            padding: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-container::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
-            background-size: 40px 40px;
-            animation: float 20s linear infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(40px, 40px); }
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 48px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            animation: slideUpCard 0.6s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        @keyframes slideUpCard {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-card h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #1e4a3b, #2c7a5e, #5bc0a3);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            color: #1e4a3b;
-            margin-bottom: 0.3rem;
-            font-size: 0.85rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2edeb;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus {
-            border-color: #2c7a5e;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(44, 122, 94, 0.1);
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(30, 74, 59, 0.3);
-        }
-
-        /* Customer Portal Dashboard */
-        .customer-portal {
-            min-height: 100vh;
-            display: flex;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        }
-
-        /* Mobile Menu */
-        .mobile-menu-toggle {
-            display: none;
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1001;
-            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
-            border: none;
-            color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-size: 1.3rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mobile-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Sidebar */
-        .portal-sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, #0a221d 0%, #0c2b25 100%);
-            color: white;
-            padding: 1.5rem;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            transition: all 0.3s;
-            border-right: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-        }
-
-        @media (max-width: 768px) {
-            .portal-sidebar {
-                position: fixed;
-                left: -280px;
-                top: 0;
-                height: 100vh;
-                z-index: 1000;
-                transition: left 0.3s ease;
-            }
-            .portal-sidebar.open {
-                left: 0;
-                box-shadow: 4px 0 20px rgba(0,0,0,0.3);
-            }
-            .mobile-menu-toggle {
-                display: flex;
-            }
-            .mobile-overlay.show {
-                display: block;
-            }
-            .portal-main {
-                width: 100%;
-            }
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.5rem;
-            margin-bottom: 2rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-        }
-
-        .sidebar-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar-logo-icon i {
-            font-size: 1.3rem;
-            color: #5bc0a3;
-        }
-
-        .sidebar-logo-text h2 {
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .sidebar-logo-text p {
-            font-size: 0.6rem;
-            opacity: 0.7;
-        }
-
-        .sidebar-nav {
-            flex: 1;
-        }
-
-        .sidebar-nav ul {
-            list-style: none;
-        }
-
-        .sidebar-nav ul li {
-            margin: 0.3rem 0;
-        }
-
-        .sidebar-nav ul li button {
-            background: transparent;
-            border: none;
-            color: #b8cdc5;
-            width: 100%;
-            text-align: left;
-            padding: 10px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .sidebar-nav ul li button i {
-            width: 22px;
-            font-size: 1rem;
-        }
-
-        .sidebar-nav ul li button:hover {
-            background: rgba(44, 122, 94, 0.3);
-            color: white;
-        }
-
-        .sidebar-nav ul li .active {
-            background: linear-gradient(135deg, #2c7a5e, #1e4a3b);
-            color: white;
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar-footer button {
-            background: transparent;
-            border: none;
-            color: #b8cdc5;
-            width: 100%;
-            text-align: left;
-            padding: 10px 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            transition: all 0.3s;
-        }
-
-        .sidebar-footer button:hover {
-            background: rgba(220, 38, 38, 0.2);
-            color: #f87171;
-        }
-
-        /* Main Content */
-        .portal-main {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .portal-header {
-            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
-            padding: 1rem 1.5rem;
-            position: relative;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .welcome-section h1 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .welcome-section p {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            color: white;
-        }
-
-        .customer-profile-card {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: rgba(255,255,255,0.1);
-            padding: 0.4rem 1rem;
-            border-radius: 50px;
-        }
-
-        .profile-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #5bc0a3, #2c7a5e);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .profile-avatar i {
-            font-size: 1.2rem;
-            color: white;
-        }
-
-        .profile-details h3 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        .profile-details p {
-            font-size: 0.7rem;
-            opacity: 0.8;
-            color: white;
-        }
-
-        /* Stats Cards */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1rem;
-            padding: 1.5rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1rem;
-            border-radius: 20px;
-            text-align: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(44, 122, 94, 0.1);
-            cursor: pointer;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        .stat-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #e8f5e9, #d4ebd6);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.5rem;
-        }
-
-        .stat-icon i {
-            font-size: 1.3rem;
-            color: #2c7a5e;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1e4a3b;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: #5b6e69;
-            text-transform: uppercase;
-        }
-
-        /* Content Area */
-        .content-area {
-            padding: 1rem 1.5rem 1.5rem;
-        }
-
-        /* Tables */
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 20px;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 500px;
-        }
-
-        .data-table thead tr {
-            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
-        }
-
-        .data-table th {
-            padding: 10px 14px;
-            text-align: left;
-            color: white;
-            font-weight: 600;
-            font-size: 0.7rem;
-        }
-
-        .data-table td {
-            padding: 8px 14px;
-            border-bottom: 1px solid #eef2f0;
-            font-size: 0.8rem;
-        }
-
-        .data-table tbody tr:hover {
-            background: #f8fbf9;
-        }
-
-        /* Badges */
-        .badge-active {
-            background: #e8f5e9;
-            color: #2b7e5a;
-            padding: 3px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .badge-inactive {
-            background: #ffebee;
-            color: #c2410c;
-            padding: 3px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .badge-incoming {
-            background: #e3f2fd;
-            color: #1565c0;
-            padding: 3px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        /* Telegram Card */
-        .telegram-card {
-            background: linear-gradient(135deg, #1e4a3b, #0f3b2f);
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: white;
-        }
-
-        .telegram-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .telegram-card p {
-            font-size: 0.8rem;
-            opacity: 0.9;
-            margin-bottom: 1rem;
-        }
-
-        .telegram-input-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .telegram-input-group input {
-            flex: 1;
-            padding: 10px 14px;
-            border: none;
-            border-radius: 30px;
-            font-size: 0.85rem;
-        }
-
-        .btn-telegram {
-            background: #0088cc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .btn-telegram:hover {
-            background: #006699;
-            transform: translateY(-2px);
-        }
-
-        .telegram-status {
-            margin-top: 0.8rem;
-            padding: 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-        }
-
-        .status-connected {
-            background: rgba(255,255,255,0.2);
-            color: #a8d5c2;
-        }
-
-        .status-disconnected {
-            background: rgba(255,255,255,0.15);
-            color: #ffcccb;
-        }
-
-        /* Transfer Form */
-        .transfer-form {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .transfer-form h3 {
-            color: #1e4a3b;
-            margin-bottom: 1rem;
-            text-align: center;
-            font-size: 1.2rem;
-        }
-
-        .transfer-form select,
-        .transfer-form input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #e2edeb;
-            border-radius: 16px;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .feedback-message {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-
-        .feedback-success {
-            background: #e8f5e9;
-            color: #2b7e5a;
-        }
-
-        .feedback-error {
-            background: #ffebee;
-            color: #c2410c;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            padding: 0.8rem 1.2rem;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            animation: slideInRight 0.3s ease;
-            font-size: 0.85rem;
-            border-left: 4px solid #2c7a5e;
-        }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(100px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            color: #5b6e69;
-        }
-
-        .empty-state i {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
-            opacity: 0.3;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-                padding: 1rem;
-                gap: 0.75rem;
-            }
-            .content-area {
-                padding: 1rem;
-            }
-            .portal-header {
-                padding: 1rem;
-                margin-top: 50px;
-            }
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .welcome-section h1 {
-                font-size: 1.1rem;
-            }
-            .stat-number {
-                font-size: 1.2rem;
-            }
-            .telegram-input-group {
-                flex-direction: column;
-            }
-            .toast {
-                bottom: 10px;
-                right: 10px;
-                left: 10px;
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            .stat-card {
-                padding: 0.75rem;
-            }
-            .sidebar-nav ul li button span {
-                display: none;
-            }
-            .sidebar-nav ul li button {
-                justify-content: center;
-                padding: 12px;
-            }
-            .sidebar-nav ul li button i {
-                margin: 0;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%); min-height: 100vh; overflow-x: hidden; }
+
+        .install-prompt { position: fixed; bottom: 20px; left: 20px; right: 20px; background: linear-gradient(135deg, #1e4a3b, #0f3b2f); color: white; padding: 1rem; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; z-index: 2000; animation: slideUp 0.3s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .install-prompt button { background: white; color: #1e4a3b; border: none; padding: 8px 20px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .install-prompt button:hover { transform: scale(1.05); }
+        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .online-status { position: fixed; bottom: 20px; left: 20px; background: #2b7e5a; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; z-index: 1000; transition: all 0.3s; }
+        .offline-status { background: #c2410c; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0b2b26 0%, #1e4a3b 50%, #2c7a5e 100%); padding: 1rem; position: relative; overflow: hidden; }
+        .login-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-radius: 48px; padding: 2rem; width: 100%; max-width: 440px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); animation: slideUpCard 0.6s ease; z-index: 1; }
+        @keyframes slideUpCard { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .login-card h2 { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #1e4a3b, #2c7a5e, #5bc0a3); -webkit-background-clip: text; background-clip: text; color: transparent; text-align: center; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 600; color: #1e4a3b; margin-bottom: 0.3rem; font-size: 0.85rem; }
+        .form-group input { width: 100%; padding: 12px 16px; border: 2px solid #e2edeb; border-radius: 30px; font-size: 0.95rem; transition: all 0.3s; }
+        .form-group input:focus { border-color: #2c7a5e; outline: none; box-shadow: 0 0 0 3px rgba(44, 122, 94, 0.1); transform: translateY(-2px); }
+        .btn { background: linear-gradient(135deg, #1e4a3b, #0f3b2f); color: white; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; width: 100%; cursor: pointer; transition: all 0.3s; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30, 74, 59, 0.3); }
+
+        .customer-portal { min-height: 100vh; display: flex; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
+        .mobile-menu-toggle { display: none; position: fixed; top: 15px; left: 15px; z-index: 1001; background: linear-gradient(135deg, #1e4a3b, #0f3b2f); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s; align-items: center; justify-content: center; }
+        .mobile-menu-toggle:hover { transform: scale(1.05); }
+        .mobile-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 999; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .portal-sidebar { width: 280px; background: linear-gradient(180deg, #0a221d 0%, #0c2b25 100%); color: white; padding: 1.5rem; position: sticky; top: 0; height: 100vh; transition: all 0.3s; border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; z-index: 1000; }
+        @media (max-width: 768px) { .portal-sidebar { position: fixed; left: -280px; top: 0; height: 100vh; z-index: 1000; transition: left 0.3s ease; } .portal-sidebar.open { left: 0; box-shadow: 4px 0 20px rgba(0,0,0,0.3); } .mobile-menu-toggle { display: flex; } .mobile-overlay.show { display: block; } .portal-main { width: 100%; } }
+        .sidebar-logo { display: flex; align-items: center; gap: 12px; padding: 0.5rem; margin-bottom: 2rem; background: rgba(255,255,255,0.05); border-radius: 20px; transition: all 0.3s; cursor: pointer; }
+        .sidebar-logo:hover { background: rgba(255,255,255,0.1); transform: translateX(5px); }
+        .sidebar-logo-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .sidebar-logo-icon i { font-size: 1.3rem; color: #5bc0a3; animation: iconPulse 2s infinite; }
+        @keyframes iconPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .sidebar-logo-text h2 { font-size: 1.1rem; font-weight: 700; }
+        .sidebar-logo-text p { font-size: 0.6rem; opacity: 0.7; }
+        .sidebar-nav { flex: 1; }
+        .sidebar-nav ul { list-style: none; }
+        .sidebar-nav ul li { margin: 0.3rem 0; animation: fadeInLeft 0.3s ease forwards; opacity: 0; }
+        .sidebar-nav ul li:nth-child(1) { animation-delay: 0.05s; }
+        .sidebar-nav ul li:nth-child(2) { animation-delay: 0.1s; }
+        .sidebar-nav ul li:nth-child(3) { animation-delay: 0.15s; }
+        .sidebar-nav ul li:nth-child(4) { animation-delay: 0.2s; }
+        .sidebar-nav ul li:nth-child(5) { animation-delay: 0.25s; }
+        .sidebar-nav ul li:nth-child(6) { animation-delay: 0.3s; }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .sidebar-nav ul li button { background: transparent; border: none; color: #b8cdc5; width: 100%; text-align: left; padding: 10px 14px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; font-weight: 500; transition: all 0.3s; position: relative; overflow: hidden; }
+        .sidebar-nav ul li button::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(44, 122, 94, 0.4); transition: width 0.3s; z-index: -1; }
+        .sidebar-nav ul li button:hover::before { width: 100%; }
+        .sidebar-nav ul li button i { width: 22px; font-size: 1rem; transition: transform 0.3s; }
+        .sidebar-nav ul li button:hover i { transform: scale(1.15); color: #5bc0a3; }
+        .sidebar-nav ul li button:hover { color: white; transform: translateX(5px); }
+        .sidebar-nav ul li .active { background: linear-gradient(135deg, #2c7a5e, #1e4a3b); color: white; box-shadow: 0 4px 12px rgba(44, 122, 94, 0.4); }
+        .sidebar-footer { margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-footer button { background: transparent; border: none; color: #b8cdc5; width: 100%; text-align: left; padding: 10px 14px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; transition: all 0.3s; }
+        .sidebar-footer button:hover { background: rgba(220, 38, 38, 0.2); color: #f87171; }
+
+        .portal-main { flex: 1; overflow-y: auto; }
+        .portal-header { background: linear-gradient(135deg, #1e4a3b, #0f3b2f); padding: 1rem 1.5rem; position: relative; overflow: hidden; }
+        .portal-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 50%, rgba(91,192,163,0.1) 0%, transparent 50%); pointer-events: none; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; position: relative; z-index: 1; }
+        .welcome-section h1 { font-size: 1.3rem; font-weight: 700; color: white; }
+        .welcome-section p { font-size: 0.75rem; opacity: 0.8; color: white; }
+        .customer-profile-card { display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.1); padding: 0.4rem 1rem; border-radius: 50px; backdrop-filter: blur(10px); transition: all 0.3s; }
+        .customer-profile-card:hover { transform: translateY(-2px); background: rgba(255,255,255,0.2); }
+        .profile-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #5bc0a3, #2c7a5e); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .profile-avatar i { font-size: 1.2rem; color: white; }
+        .profile-details h3 { font-size: 0.9rem; font-weight: 600; color: white; }
+        .profile-details p { font-size: 0.7rem; opacity: 0.8; color: white; }
+
+        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; padding: 1.5rem; animation: fadeInUp 0.4s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .stat-card { background: white; padding: 1rem; border-radius: 20px; text-align: center; transition: all 0.3s; border: 1px solid rgba(44, 122, 94, 0.1); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); border-color: rgba(44, 122, 94, 0.3); }
+        .stat-icon { width: 45px; height: 45px; background: linear-gradient(135deg, #e8f5e9, #d4ebd6); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem; transition: all 0.3s; }
+        .stat-card:hover .stat-icon { transform: scale(1.05) rotate(5deg); }
+        .stat-icon i { font-size: 1.3rem; color: #2c7a5e; }
+        .stat-number { font-size: 1.5rem; font-weight: 800; color: #1e4a3b; }
+        .stat-label { font-size: 0.7rem; color: #5b6e69; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .content-area { padding: 1rem 1.5rem 1.5rem; animation: fadeIn 0.4s ease; }
+
+        .table-wrapper { overflow-x: auto; border-radius: 20px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .table-wrapper:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        .data-table thead tr { background: linear-gradient(135deg, #1e4a3b, #0f3b2f); }
+        .data-table th { padding: 12px 16px; text-align: left; color: white; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-table td { padding: 10px 16px; border-bottom: 1px solid #eef2f0; font-size: 0.8rem; transition: all 0.2s; }
+        .data-table tbody tr:hover { background: #f8fbf9; transform: translateX(2px); }
+
+        .badge-active { background: #e8f5e9; color: #2b7e5a; padding: 3px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+        .badge-inactive { background: #ffebee; color: #c2410c; padding: 3px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+        .badge-incoming { background: #e3f2fd; color: #1565c0; padding: 3px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; }
+
+        .referral-hero { background: linear-gradient(135deg, #1e4a3b, #0f3b2f); border-radius: 28px; padding: 2rem; margin-bottom: 1.5rem; color: white; position: relative; overflow: hidden; animation: slideInRight 0.5s ease; }
+        .referral-hero::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(91,192,163,0.1) 0%, transparent 70%); pointer-events: none; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        .referral-hero h2 { font-size: 1.5rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px; }
+        .referral-hero p { opacity: 0.9; margin-bottom: 1.5rem; }
+        .reward-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.8rem; margin-bottom: 1rem; backdrop-filter: blur(10px); }
+
+        .referral-code-section { background: white; border-radius: 24px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s; }
+        .referral-code-section:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .referral-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #5b6e69; margin-bottom: 0.5rem; }
+        .referral-code-box { background: #f8fbf9; border-radius: 16px; padding: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border: 2px solid #e2edeb; transition: all 0.3s; }
+        .referral-code-box:hover { border-color: #2c7a5e; }
+        .referral-code { font-size: 1.2rem; font-weight: 700; font-family: monospace; letter-spacing: 2px; background: white; padding: 0.5rem 1rem; border-radius: 12px; color: #1e4a3b; }
+        .referral-link { font-size: 0.8rem; color: #5b6e69; word-break: break-all; flex: 1; }
+        .copy-btn { background: linear-gradient(135deg, #1e4a3b, #0f3b2f); color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .copy-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(30,74,59,0.3); }
+
+        .share-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 1rem; }
+        .share-btn { background: #f0f4f2; border: none; padding: 10px 20px; border-radius: 40px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; font-weight: 500; transition: all 0.3s; color: #1e4a3b; }
+        .share-btn:hover { transform: translateY(-2px); }
+        .share-wa { background: #25D366; color: white; }
+        .share-tg { background: #0088cc; color: white; }
+        .share-fb { background: #1877f2; color: white; }
+
+        .stats-grid-referral { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card-referral { background: white; padding: 1.2rem; border-radius: 20px; text-align: center; transition: all 0.3s; border: 1px solid rgba(44, 122, 94, 0.1); }
+        .stat-card-referral:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .stat-number-referral { font-size: 2rem; font-weight: 800; color: #1e4a3b; }
+        .stat-label-referral { font-size: 0.7rem; color: #5b6e69; text-transform: uppercase; margin-top: 0.25rem; }
+
+        .statement-hero { background: linear-gradient(135deg, #1e4a3b, #0f3b2f); border-radius: 28px; padding: 2rem; margin-bottom: 1.5rem; color: white; position: relative; overflow: hidden; animation: slideInLeft 0.5s ease; }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        .statement-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .summary-card { background: white; border-radius: 20px; padding: 1.2rem; text-align: center; transition: all 0.3s; cursor: pointer; border: 1px solid rgba(44, 122, 94, 0.1); animation: scaleIn 0.3s ease backwards; }
+        .summary-card:nth-child(1) { animation-delay: 0.05s; }
+        .summary-card:nth-child(2) { animation-delay: 0.1s; }
+        .summary-card:nth-child(3) { animation-delay: 0.15s; }
+        .summary-card:nth-child(4) { animation-delay: 0.2s; }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .summary-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
+        .summary-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #e8f5e9, #d4ebd6); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; }
+        .summary-icon i { font-size: 1.5rem; color: #2c7a5e; }
+        .summary-number { font-size: 2rem; font-weight: 800; color: #1e4a3b; }
+        .summary-label { font-size: 0.7rem; color: #5b6e69; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .transfer-form { max-width: 500px; margin: 0 auto; background: white; padding: 1.5rem; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); animation: fadeInUp 0.4s ease; }
+        .transfer-form h3 { color: #1e4a3b; margin-bottom: 1rem; text-align: center; font-size: 1.2rem; }
+        .transfer-form select, .transfer-form input { width: 100%; padding: 10px 14px; border: 2px solid #e2edeb; border-radius: 16px; font-size: 0.9rem; margin-bottom: 1rem; transition: all 0.3s; }
+        .transfer-form select:focus, .transfer-form input:focus { border-color: #2c7a5e; outline: none; box-shadow: 0 0 0 3px rgba(44, 122, 94, 0.1); transform: translateY(-2px); }
+        .feedback-message { margin-top: 1rem; padding: 0.75rem; border-radius: 12px; text-align: center; font-size: 0.85rem; animation: fadeIn 0.3s ease; }
+        .feedback-success { background: #e8f5e9; color: #2b7e5a; }
+        .feedback-error { background: #ffebee; color: #c2410c; }
+
+        .telegram-card { background: linear-gradient(135deg, #1e4a3b, #0f3b2f); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; color: white; animation: fadeInUp 0.4s ease; }
+        .telegram-input-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem; }
+        .telegram-input-group input { flex: 1; padding: 10px 14px; border: none; border-radius: 30px; font-size: 0.85rem; }
+        .btn-telegram { background: #0088cc; color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s; }
+        .btn-telegram:hover { transform: translateY(-2px); background: #006699; }
+        .telegram-status { margin-top: 0.8rem; padding: 0.5rem; border-radius: 12px; font-size: 0.75rem; text-align: center; }
+        .status-connected { background: rgba(255,255,255,0.2); color: #a8d5c2; }
+        .status-disconnected { background: rgba(255,255,255,0.15); color: #ffcccb; }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; background: white; padding: 0.8rem 1.2rem; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; z-index: 1000; animation: slideInRight 0.3s ease; font-size: 0.85rem; border-left: 4px solid #2c7a5e; }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+
+        .empty-state { text-align: center; padding: 2rem; color: #5b6e69; }
+        .empty-state i { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.3; transition: all 0.3s; }
+        .empty-state:hover i { transform: scale(1.1); opacity: 0.5; }
+
+        @media (max-width: 768px) { .stats-container { grid-template-columns: repeat(2, 1fr); padding: 1rem; gap: 0.75rem; } .content-area { padding: 1rem; } .portal-header { padding: 1rem; margin-top: 50px; } .header-content { flex-direction: column; text-align: center; } .welcome-section h1 { font-size: 1.1rem; } .stat-number { font-size: 1.2rem; } .referral-hero { padding: 1.5rem; } .referral-hero h2 { font-size: 1.2rem; } .statement-summary { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } .summary-number { font-size: 1.3rem; } }
+        @media (max-width: 480px) { .stats-container { grid-template-columns: 1fr; } .referral-code { font-size: 0.9rem; } .share-buttons { justify-content: center; } .statement-summary { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -786,800 +190,259 @@
     let deferredPrompt = null;
     let isOnline = navigator.onLine;
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        showInstallPrompt();
-    });
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; showInstallPrompt(); });
 
     function showInstallPrompt() {
         const installContainer = document.getElementById('installContainer');
-        if (!installContainer) return;
-        
-        if (localStorage.getItem('installPromptDismissed')) return;
-        
-        installContainer.innerHTML = `
-            <div class="install-prompt">
-                <div>
-                    <i class="fas fa-download"></i> <strong>Install JamiiSim App</strong>
-                    <p style="font-size: 0.7rem; margin-top: 4px;">Install for faster access and offline use</p>
-                </div>
-                <div style="display: flex; gap: 10px;">
-                    <button id="installAppBtn">Install</button>
-                    <button id="dismissInstallBtn" style="background: rgba(255,255,255,0.2); color: white;">Later</button>
-                </div>
-            </div>
-        `;
-        
-        document.getElementById('installAppBtn')?.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            }
-            installContainer.innerHTML = '';
-            localStorage.setItem('installPromptDismissed', 'true');
-        });
-        
-        document.getElementById('dismissInstallBtn')?.addEventListener('click', () => {
-            installContainer.innerHTML = '';
-            localStorage.setItem('installPromptDismissed', 'true');
-        });
+        if(!installContainer || localStorage.getItem('installPromptDismissed')) return;
+        installContainer.innerHTML = `<div class="install-prompt"><div><i class="fas fa-download"></i> <strong>Install JamiiSim App</strong><p style="font-size:0.7rem;">Install for faster access</p></div><div style="display:flex;gap:10px;"><button id="installAppBtn">Install</button><button id="dismissInstallBtn" style="background:rgba(255,255,255,0.2);">Later</button></div></div>`;
+        document.getElementById('installAppBtn')?.addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; } installContainer.innerHTML = ''; localStorage.setItem('installPromptDismissed','true'); });
+        document.getElementById('dismissInstallBtn')?.addEventListener('click', () => { installContainer.innerHTML = ''; localStorage.setItem('installPromptDismissed','true'); });
     }
 
-    // Online/Offline detection
-    function updateOnlineStatus() {
-        isOnline = navigator.onLine;
-        const statusDiv = document.getElementById('onlineStatus');
-        if (statusDiv) {
-            statusDiv.className = `online-status ${isOnline ? '' : 'offline-status'}`;
-            statusDiv.innerHTML = isOnline ? '<i class="fas fa-wifi"></i> Online' : '<i class="fas fa-wifi-slash"></i> Offline Mode';
-        }
-        
-        if (!isOnline) {
-            showToast("You are offline. Using cached data.", false);
-        } else {
-            syncPendingData();
-        }
-    }
-
+    function updateOnlineStatus() { isOnline = navigator.onLine; const statusDiv = document.getElementById('onlineStatus'); if(statusDiv) { statusDiv.className = `online-status ${isOnline ? '' : 'offline-status'}`; statusDiv.innerHTML = isOnline ? '<i class="fas fa-wifi"></i> Online' : '<i class="fas fa-wifi-slash"></i> Offline'; } if(!isOnline) showToast("Offline mode - using cached data"); else syncPendingData(); }
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
 
     async function syncPendingData() {
-        const pendingTransfers = JSON.parse(localStorage.getItem('pendingTransfers') || '[]');
-        if (pendingTransfers.length > 0) {
-            showToast(`Syncing ${pendingTransfers.length} pending transfers...`);
-            for (const transfer of pendingTransfers) {
-                try {
-                    const result = await apiCall("updateUnits", { rowIndex: transfer.rowIndex, addUnits: transfer.units });
-                    if (result.success) {
-                        const updated = pendingTransfers.filter(t => t.id !== transfer.id);
-                        localStorage.setItem('pendingTransfers', JSON.stringify(updated));
-                    }
-                } catch (e) {
-                    console.error("Sync failed:", e);
-                }
-            }
-            location.reload();
-        }
+        const pending = JSON.parse(localStorage.getItem('pendingTransfers') || '[]');
+        if(pending.length > 0) { showToast(`Syncing ${pending.length} transfers...`); for(const t of pending) { const result = await apiCall("updateUnits", { rowIndex: t.rowIndex, addUnits: t.units }); if(result.success) localStorage.setItem('pendingTransfers', JSON.stringify(pending.filter(p => p.id !== t.id))); } location.reload(); }
     }
 
-    // Service Worker registration
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').then(registration => {
-                console.log('ServiceWorker registered');
-            }).catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-        });
-    }
+    if('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW failed:', err)); }); }
 
-    async function requestNotificationPermission() {
-        if ('Notification' in window) {
-            await Notification.requestPermission();
-        }
-    }
-
-    function sendLocalNotification(title, body) {
-        if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(title, { body: body });
-        }
-    }
-
-    // ==================== TELEGRAM CONFIGURATION ====================
+    // ==================== CONFIGURATION ====================
     const TELEGRAM_BOT_TOKEN = "8786753893:AAEnCBeMrSPqAyrX-7PXXPuVHz79YrEwvZQ";
     const TELEGRAM_BOT_USERNAME = "jamiisim2bot";
     const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
-    
     const API_BASE_URL = "https://script.google.com/macros/s/AKfycbx-ggpKM1cMYW48ojsD3wuy8vkyJP4sLe31KDi4w8sF559e22i8ZvVFydnooGu4lnpQ/exec";
     
-    let currentCustomer = null;
-    let customerTills = [];
-    let transferHistory = [];
-    let totalUnitsReceived = 0;
-    let transactionCount = 0;
-    let currentTab = "tills";
-    let mobileMenuOpen = false;
-    let customerTelegramId = null;
-    let customerTelegramUsername = null;
-    let isLoggingOut = false;
-    
-    function showToast(message, isError = false) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.style.background = isError ? '#fee2e2' : 'white';
-        toast.style.color = isError ? '#dc2626' : '#1e4a3b';
-        toast.style.borderLeftColor = isError ? '#dc2626' : '#2c7a5e';
-        toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${message}`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-        
-        if (!isError && message.includes("added")) {
-            sendLocalNotification("JamiiSim Update", message);
-        }
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return "";
-        return String(str).replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-    
-    function normalizePhone(phone) {
-        if (!phone) return "";
-        let normalized = String(phone).replace(/\D/g, '');
-        if (normalized.startsWith('254')) normalized = normalized.substring(3);
-        else if (normalized.startsWith('0')) normalized = normalized.substring(1);
-        return normalized;
-    }
+    let currentCustomer = null, customerTills = [], transferHistory = [], totalUnitsReceived = 0, transactionCount = 0, currentTab = "tills", mobileMenuOpen = false, customerTelegramId = null, customerTelegramUsername = null, isLoggingOut = false, referralCode = null, referralStats = { invited: 0, earnings: 0 };
+
+    function showToast(msg, isError = false) { const toast = document.createElement('div'); toast.className = 'toast'; toast.style.background = isError ? '#fee2e2' : 'white'; toast.style.color = isError ? '#dc2626' : '#1e4a3b'; toast.style.borderLeftColor = isError ? '#dc2626' : '#2c7a5e'; toast.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`; document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000); }
+    function escapeHtml(str) { if(!str) return ""; return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
+    function normalizePhone(phone) { if(!phone) return ""; let n = String(phone).replace(/\D/g,''); if(n.startsWith('254')) n = n.substring(3); else if(n.startsWith('0')) n = n.substring(1); return n; }
     
     async function apiCall(action, params = {}) {
         let url = `${API_BASE_URL}?action=${action}`;
-        Object.keys(params).forEach(key => {
-            if (params[key] !== undefined && params[key] !== null && params[key] !== "") {
-                url += `&${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`;
-            }
-        });
-        
-        try {
-            const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            return data;
-        } catch (err) {
-            console.error("API Error:", err);
-            return { success: false, error: err.message };
-        }
+        Object.keys(params).forEach(key => { if(params[key]) url += `&${key}=${encodeURIComponent(params[key])}`; });
+        try { const response = await fetch(url); if(!response.ok) throw new Error(); const data = await response.json(); return data; } catch(err) { return { success: false, error: err.message }; }
     }
-    
+
+    // ==================== REFERRAL SYSTEM ====================
+    function generateReferralCode(phone, name) { return btoa(`${phone}_${name.substring(0,3)}`).substring(0, 8).replace(/[^A-Za-z0-9]/g, '').toUpperCase(); }
+    function saveReferralCode(code) { if(currentCustomer) { localStorage.setItem(`ref_code_${currentCustomer.phone}`, code); referralCode = code; } }
+    function getReferralCode() { if(currentCustomer) { const stored = localStorage.getItem(`ref_code_${currentCustomer.phone}`); if(stored) { referralCode = stored; return stored; } else { const newCode = generateReferralCode(currentCustomer.phone, currentCustomer.name); saveReferralCode(newCode); return newCode; } } return null; }
+    function saveReferralStats(stats) { if(currentCustomer) { localStorage.setItem(`ref_stats_${currentCustomer.phone}`, JSON.stringify(stats)); referralStats = stats; } }
+    function getReferralStats() { if(currentCustomer) { const stored = localStorage.getItem(`ref_stats_${currentCustomer.phone}`); if(stored) { referralStats = JSON.parse(stored); return referralStats; } } return { invited: 0, earnings: 0 }; }
+    function trackReferral(invitedPhone, invitedName) { if(!currentCustomer) return; const stats = getReferralStats(); stats.invited++; stats.earnings += 50; saveReferralStats(stats); const referralRecord = { referrer: currentCustomer.phone, referrerName: currentCustomer.name, invited: invitedPhone, invitedName: invitedName, code: getReferralCode(), date: new Date().toISOString(), bonus: 50 }; let allReferrals = JSON.parse(localStorage.getItem('all_referrals') || '[]'); allReferrals.push(referralRecord); localStorage.setItem('all_referrals', JSON.stringify(allReferrals)); showToast(`🎉 You earned 50 bonus units for inviting ${invitedName}!`); }
+    function getReferralLink() { return `${window.location.origin}${window.location.pathname}?ref=${getReferralCode()}`; }
+    async function processReferralOnLogin(phone) { const urlParams = new URLSearchParams(window.location.search); const refCode = urlParams.get('ref'); if(refCode && !currentCustomer) { localStorage.setItem('pending_referral', refCode); } if(currentCustomer && localStorage.getItem('pending_referral')) { const pendingRef = localStorage.getItem('pending_referral'); const allReferrals = JSON.parse(localStorage.getItem('all_referrals') || '[]'); const alreadyReferred = allReferrals.some(r => r.invited === currentCustomer.phone); if(!alreadyReferred) { let referrerFound = false; for(let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if(key && key.startsWith('ref_code_')) { const storedCode = localStorage.getItem(key); if(storedCode === pendingRef) { const referrerPhone = key.replace('ref_code_', ''); trackReferral(currentCustomer.phone, currentCustomer.name); referrerFound = true; break; } } } } localStorage.removeItem('pending_referral'); } }
+
     // ==================== TELEGRAM FUNCTIONS ====================
-    
-    async function sendTelegramMessage(chatId, message) {
-        if (!TELEGRAM_BOT_TOKEN) return { success: false };
-        
-        try {
-            const response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: message,
-                    parse_mode: 'HTML'
-                })
-            });
-            const data = await response.json();
-            return { success: data.ok };
-        } catch (err) {
-            return { success: false };
-        }
-    }
-    
-    async function getChatIdFromUsername(username) {
-        const cleanUsername = username.replace('@', '');
-        
-        try {
-            const response = await fetch(`${TELEGRAM_API_URL}/getUpdates`);
-            const data = await response.json();
-            
-            if (data.ok && data.result) {
-                for (const update of data.result) {
-                    const message = update.message;
-                    if (message && message.chat && message.from) {
-                        const msgUsername = message.from.username;
-                        const chatId = message.chat.id;
-                        
-                        if (msgUsername && msgUsername.toLowerCase() === cleanUsername.toLowerCase()) {
-                            return { success: true, chatId: chatId };
-                        }
-                    }
-                }
-            }
-            return { success: false };
-        } catch (err) {
-            return { success: false };
-        }
-    }
-    
-    function saveTelegramUsername(username, chatId) {
-        if (!currentCustomer) return false;
-        
-        const telegramData = { username: username, chatId: chatId, updatedAt: new Date().toISOString() };
-        localStorage.setItem(`telegram_${currentCustomer.phone}`, JSON.stringify(telegramData));
-        customerTelegramUsername = username;
-        customerTelegramId = chatId;
-        return true;
-    }
-    
-    function getTelegramUsername() {
-        if (!currentCustomer) return null;
-        
-        const stored = localStorage.getItem(`telegram_${currentCustomer.phone}`);
-        if (stored) {
-            const data = JSON.parse(stored);
-            customerTelegramUsername = data.username;
-            customerTelegramId = data.chatId;
-            return data;
-        }
-        return null;
-    }
-    
-    async function notifyTransfer(tillNumber, units, newBalance, senderPhone) {
-        if (!customerTelegramId) return;
-        const message = `🔔 Transfer Received!\n\n📱 Till: ${tillNumber}\n📦 Units Added: +${units}\n💰 New Balance: ${newBalance} units\n👤 From: ${senderPhone || 'Admin'}\n📅 ${new Date().toLocaleString()}`;
-        await sendTelegramMessage(customerTelegramId, message);
-    }
-    
-    async function notifyLogin() {
-        if (!customerTelegramId) return;
-        const message = `🔐 Login Alert\n\n👋 Welcome back, ${currentCustomer.name}!\n📱 Phone: ${currentCustomer.phone}\n📅 ${new Date().toLocaleString()}`;
-        await sendTelegramMessage(customerTelegramId, message);
-    }
-    
-    async function sendTestMessage() {
-        if (!customerTelegramId) {
-            showToast("Please connect your Telegram account first", true);
-            return false;
-        }
-        
-        const result = await sendTelegramMessage(customerTelegramId, "🔔 Test notification! Your Telegram is working properly.");
-        if (result.success) {
-            showToast("Test message sent to your Telegram!");
-        } else {
-            showToast("Failed to send test message", true);
-        }
-        return result.success;
-    }
-    
-    // ==================== LOGIN SCREEN ====================
-    function renderLogin() {
-        return `
-            <div class="login-container">
-                <div class="login-card">
-                    <h2><i class="fab fa-telegram"></i> JamiiSim Portal</h2>
-                    <div class="form-group">
-                        <label><i class="fas fa-phone"></i> Phone Number</label>
-                        <input type="tel" id="customerPhone" placeholder="0712345678">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-key"></i> PIN (Last 4 digits of ID)</label>
-                        <input type="password" id="customerPin" placeholder="Enter PIN" maxlength="4">
-                    </div>
-                    <button class="btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Access Portal</button>
-                    <div id="loginError" style="color:#c2410c; text-align:center; margin-top:1rem;"></div>
-                    
-                    <div style="margin-top: 1.5rem; padding: 1rem; background: #f0f4f2; border-radius: 16px;">
-                        <p style="font-size: 0.7rem; text-align: center; margin-bottom: 0.5rem;">
-                            <i class="fab fa-telegram"></i> <strong>Get Telegram Notifications!</strong>
-                        </p>
-                        <p style="font-size: 0.65rem; text-align: center;">
-                            1. Message <strong>@${TELEGRAM_BOT_USERNAME}</strong> on Telegram<br>
-                            2. Login here and go to Settings<br>
-                            3. Add your Telegram username
-                        </p>
-                    </div>
-                </div>
-            </div>
-        `;
+    async function sendTelegramMessage(chatId, message) { try { const response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'HTML' }) }); const data = await response.json(); return { success: data.ok }; } catch(err) { return { success: false }; } }
+    async function getChatIdFromUsername(username) { const cleanUsername = username.replace('@',''); try { const response = await fetch(`${TELEGRAM_API_URL}/getUpdates`); const data = await response.json(); if(data.ok && data.result) { for(const update of data.result) { const message = update.message; if(message && message.chat && message.from && message.from.username && message.from.username.toLowerCase() === cleanUsername.toLowerCase()) { return { success: true, chatId: message.chat.id }; } } } return { success: false }; } catch(err) { return { success: false }; } }
+    function saveTelegramUsername(username, chatId) { if(!currentCustomer) return false; localStorage.setItem(`telegram_${currentCustomer.phone}`, JSON.stringify({ username, chatId, updatedAt: new Date().toISOString() })); customerTelegramUsername = username; customerTelegramId = chatId; return true; }
+    function getTelegramUsername() { if(!currentCustomer) return null; const stored = localStorage.getItem(`telegram_${currentCustomer.phone}`); if(stored) { const data = JSON.parse(stored); customerTelegramUsername = data.username; customerTelegramId = data.chatId; return data; } return null; }
+    async function notifyTransfer(tillNumber, units, newBalance) { if(customerTelegramId) await sendTelegramMessage(customerTelegramId, `🔔 Transfer Received!\n\nTill: ${tillNumber}\nUnits: +${units}\nNew Balance: ${newBalance}\n📅 ${new Date().toLocaleString()}`); }
+    async function notifyLogin() { if(customerTelegramId) await sendTelegramMessage(customerTelegramId, `🔐 Login Alert\n\nWelcome back ${currentCustomer.name}!\n📅 ${new Date().toLocaleString()}`); }
+    async function sendTestMessage() { if(!customerTelegramId) { showToast("Connect Telegram first", true); return false; } const result = await sendTelegramMessage(customerTelegramId, "🔔 Test notification! Your Telegram is working."); if(result.success) showToast("Test message sent!"); else showToast("Failed to send", true); return result.success; }
+
+    // ==================== LOGIN ====================
+    function renderLogin() { 
+        return `<div class="login-container"><div class="login-card"><h2><i class="fas fa-bolt"></i> JamiiSim Portal</h2><div class="form-group"><label>Phone Number</label><input type="tel" id="customerPhone" placeholder="0712345678"></div><div class="form-group"><label>PIN (Last 4 digits of ID)</label><input type="password" id="customerPin" placeholder="Enter PIN" maxlength="4"></div><button class="btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Access Portal</button><div id="loginError" style="color:#c2410c;text-align:center;margin-top:1rem;"></div></div></div>`; 
     }
     
     async function handleLogin() {
         const phone = document.getElementById("customerPhone").value.trim();
         const pin = document.getElementById("customerPin").value;
         const errorDiv = document.getElementById("loginError");
-        
-        if (!phone || !pin) {
-            errorDiv.innerHTML = "Please enter phone number and PIN";
-            return;
-        }
-        
+        if(!phone || !pin) { errorDiv.innerHTML = "Enter phone and PIN"; return; }
         errorDiv.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Verifying...';
-        
         const linesResult = await apiCall("getLines");
         const customers = linesResult.lines || [];
         const customer = customers.find(c => normalizePhone(c.phone) === normalizePhone(phone));
-        
-        if (customer) {
-            const idString = String(customer.idNumber);
-            const idLast4 = idString.slice(-4);
-            
-            if (pin === idLast4) {
+        if(customer) {
+            const idLast4 = String(customer.idNumber).slice(-4);
+            if(pin === idLast4) {
                 currentCustomer = customer;
                 await loadCustomerData();
-                
-                const telegramData = getTelegramUsername();
-                if (telegramData && telegramData.chatId) {
-                    await notifyLogin();
-                }
-                
+                await processReferralOnLogin(phone);
+                const tgData = getTelegramUsername();
+                if(tgData && tgData.chatId) await notifyLogin();
+                getReferralCode();
+                getReferralStats();
                 renderDashboard();
                 showToast(`Welcome ${customer.name}!`);
                 return;
             }
         }
-        
-        errorDiv.innerHTML = "Invalid phone number or PIN. Try: 0712345678 / 5678";
+        errorDiv.innerHTML = "Invalid credentials. Try: 0712345678 / 5678";
     }
     
     async function loadCustomerData() {
         const tillsResult = await apiCall("getTills");
         const allTills = tillsResult.tills || [];
         customerTills = allTills.filter(t => normalizePhone(t.phone) === normalizePhone(currentCustomer.phone));
-        
         const storedHistory = localStorage.getItem(`transfers_in_${currentCustomer.phone}`);
         transferHistory = storedHistory ? JSON.parse(storedHistory) : [];
-        totalUnitsReceived = transferHistory.reduce((sum, t) => sum + (t.units || 0), 0);
+        totalUnitsReceived = transferHistory.reduce((s,t) => s + (t.units || 0), 0);
         transactionCount = transferHistory.length;
         getTelegramUsername();
     }
-    
+
+    // ==================== DASHBOARD ====================
     function renderDashboard() {
-        const totalUnits = customerTills.reduce((sum, t) => sum + (t.units || 0), 0);
-        const activeTills = customerTills.filter(t => t.status === "active").length;
-        
+        const totalUnits = customerTills.reduce((s,t) => s + (t.units || 0), 0);
         const app = document.getElementById("app");
-        app.innerHTML = `
-            <div class="customer-portal">
-                <div class="portal-sidebar">
-                    <div class="sidebar-logo">
-                        <div class="sidebar-logo-icon"><i class="fab fa-telegram"></i></div>
-                        <div class="sidebar-logo-text"><h2>JamiiSim</h2><p>Customer Portal</p></div>
-                    </div>
-                    <div class="sidebar-nav">
-                        <ul>
-                            <li><button class="nav-btn ${currentTab === 'tills' ? 'active' : ''}" data-tab="tills"><i class="fas fa-cash-register"></i> <span>My Tills</span></button></li>
-                            <li><button class="nav-btn ${currentTab === 'transactions' ? 'active' : ''}" data-tab="transactions"><i class="fas fa-history"></i> <span>Transactions</span></button></li>
-                            <li><button class="nav-btn ${currentTab === 'transfer' ? 'active' : ''}" data-tab="transfer"><i class="fas fa-arrow-down"></i> <span>Transfer In</span></button></li>
-                            <li><button class="nav-btn ${currentTab === 'settings' ? 'active' : ''}" data-tab="settings"><i class="fab fa-telegram"></i> <span>Telegram</span></button></li>
-                            <li><button class="nav-btn ${currentTab === 'statement' ? 'active' : ''}" data-tab="statement"><i class="fas fa-download"></i> <span>Statement</span></button></li>
-                        </ul>
-                    </div>
-                    <div class="sidebar-footer">
-                        <button id="logoutBtnPortal"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
-                    </div>
-                </div>
-                
-                <div class="portal-main">
-                    <div class="portal-header">
-                        <div class="header-content">
-                            <div class="welcome-section">
-                                <h1>Welcome, ${escapeHtml(currentCustomer.name)}</h1>
-                                <p>Manage your tills and get Telegram notifications</p>
-                                ${!isOnline ? '<span style="font-size: 0.7rem; background: #f59e0b; padding: 2px 8px; border-radius: 20px;">⚠️ Offline Mode</span>' : ''}
-                            </div>
-                            <div class="customer-profile-card">
-                                <div class="profile-avatar"><i class="fas fa-user-circle"></i></div>
-                                <div class="profile-details">
-                                    <h3>${escapeHtml(currentCustomer.name)}</h3>
-                                    <p><i class="fas fa-phone"></i> ${escapeHtml(currentCustomer.phone)}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="stats-container">
-                        <div class="stat-card" data-tab="tills"><div class="stat-icon"><i class="fas fa-cash-register"></i></div><div class="stat-number">${customerTills.length}</div><div class="stat-label">Total Tills</div></div>
-                        <div class="stat-card" data-tab="tills"><div class="stat-icon"><i class="fas fa-cubes"></i></div><div class="stat-number">${totalUnits}</div><div class="stat-label">Current Units</div></div>
-                        <div class="stat-card" data-tab="transactions"><div class="stat-icon"><i class="fas fa-exchange-alt"></i></div><div class="stat-number">${transactionCount}</div><div class="stat-label">Transactions</div></div>
-                        <div class="stat-card" data-tab="transactions"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-number">${totalUnitsReceived}</div><div class="stat-label">Units Received</div></div>
-                    </div>
-                    
-                    <div class="content-area">
-                        <div id="tillsContent">${renderTillsContent()}</div>
-                        <div id="transactionsContent" style="display:none;">${renderTransactionsContent()}</div>
-                        <div id="transferContent" style="display:none;">${renderTransferForm()}</div>
-                        <div id="settingsContent" style="display:none;">${renderTelegramSettings()}</div>
-                        <div id="statementContent" style="display:none;">${renderStatementContent()}</div>
-                    </div>
-                </div>
-            </div>
-        `;
+        app.innerHTML = `<div class="customer-portal"><div class="portal-sidebar"><div class="sidebar-logo"><div class="sidebar-logo-icon"><i class="fab fa-telegram"></i></div><div class="sidebar-logo-text"><h2>JamiiSim</h2><p>Customer Portal</p></div></div><div class="sidebar-nav"><ul>
+            <li><button class="nav-btn ${currentTab==='tills'?'active':''}" data-tab="tills"><i class="fas fa-cash-register"></i> <span>My Tills</span></button></li>
+            <li><button class="nav-btn ${currentTab==='transactions'?'active':''}" data-tab="transactions"><i class="fas fa-history"></i> <span>Transactions</span></button></li>
+            <li><button class="nav-btn ${currentTab==='transfer'?'active':''}" data-tab="transfer"><i class="fas fa-arrow-down"></i> <span>Transfer In</span></button></li>
+            <li><button class="nav-btn ${currentTab==='referrals'?'active':''}" data-tab="referrals"><i class="fas fa-gift"></i> <span>Invite & Earn</span></button></li>
+            <li><button class="nav-btn ${currentTab==='settings'?'active':''}" data-tab="settings"><i class="fab fa-telegram"></i> <span>Telegram</span></button></li>
+            <li><button class="nav-btn ${currentTab==='statement'?'active':''}" data-tab="statement"><i class="fas fa-download"></i> <span>Statement</span></button></li>
+        </ul></div><div class="sidebar-footer"><button id="logoutBtnPortal"><i class="fas fa-sign-out-alt"></i> Logout</button></div></div>
+        <div class="portal-main"><div class="portal-header"><div class="header-content"><div class="welcome-section"><h1>Welcome, ${escapeHtml(currentCustomer.name)}</h1><p>Manage tills & earn rewards</p>${!isOnline ? '<span style="font-size:0.7rem;background:#f59e0b;padding:2px 8px;border-radius:20px;">⚠️ Offline Mode</span>' : ''}</div><div class="customer-profile-card"><div class="profile-avatar"><i class="fas fa-user-circle"></i></div><div class="profile-details"><h3>${escapeHtml(currentCustomer.name)}</h3><p>${escapeHtml(currentCustomer.phone)}</p></div></div></div></div>
+        <div class="stats-container"><div class="stat-card" data-tab="tills"><div class="stat-icon"><i class="fas fa-cash-register"></i></div><div class="stat-number">${customerTills.length}</div><div class="stat-label">Tills</div></div>
+        <div class="stat-card" data-tab="tills"><div class="stat-icon"><i class="fas fa-cubes"></i></div><div class="stat-number">${totalUnits}</div><div class="stat-label">Units</div></div>
+        <div class="stat-card" data-tab="transactions"><div class="stat-icon"><i class="fas fa-exchange-alt"></i></div><div class="stat-number">${transactionCount}</div><div class="stat-label">Transactions</div></div>
+        <div class="stat-card" data-tab="referrals"><div class="stat-icon"><i class="fas fa-gift"></i></div><div class="stat-number">${referralStats.invited}</div><div class="stat-label">Invited</div></div>
+        <div class="stat-card" data-tab="referrals"><div class="stat-icon"><i class="fas fa-coins"></i></div><div class="stat-number">${referralStats.earnings}</div><div class="stat-label">Bonus Units</div></div></div>
+        <div class="content-area"><div id="tillsContent">${renderTillsContent()}</div><div id="transactionsContent" style="display:none;">${renderTransactionsContent()}</div><div id="transferContent" style="display:none;">${renderTransferForm()}</div><div id="referralsContent" style="display:none;">${renderReferralsContent()}</div><div id="settingsContent" style="display:none;">${renderTelegramSettings()}</div><div id="statementContent" style="display:none;">${renderStatementContent()}</div></div></div></div>`;
         
         initMobileMenu();
+        document.querySelectorAll('.nav-btn, .stat-card').forEach(el => { el.addEventListener('click', () => { if(el.dataset.tab) switchTab(el.dataset.tab); }); });
         
-        document.querySelectorAll('.nav-btn, .stat-card').forEach(el => {
-            el.addEventListener('click', () => {
-                const tab = el.dataset.tab;
-                if (tab) switchTab(tab);
-            });
-        });
-        
-        const logoutBtn = document.getElementById("logoutBtnPortal");
-        if (logoutBtn) {
-            const newBtn = logoutBtn.cloneNode(true);
-            logoutBtn.parentNode.replaceChild(newBtn, logoutBtn);
-            newBtn.addEventListener("click", handleLogout);
-        }
-        
-        const submitBtn = document.getElementById("submitTransferBtn");
-        if (submitBtn) {
-            const newBtn = submitBtn.cloneNode(true);
-            submitBtn.parentNode.replaceChild(newBtn, submitBtn);
-            newBtn.addEventListener("click", handleTransferIn);
-        }
-        
-        const saveTelegramBtn = document.getElementById("saveTelegramBtn");
-        if (saveTelegramBtn) {
-            const newBtn = saveTelegramBtn.cloneNode(true);
-            saveTelegramBtn.parentNode.replaceChild(newBtn, saveTelegramBtn);
-            newBtn.addEventListener("click", handleSaveTelegram);
-        }
-        
-        const testTelegramBtn = document.getElementById("testTelegramBtn");
-        if (testTelegramBtn) {
-            const newBtn = testTelegramBtn.cloneNode(true);
-            testTelegramBtn.parentNode.replaceChild(newBtn, testTelegramBtn);
-            newBtn.addEventListener("click", sendTestMessage);
-        }
-        
-        const downloadBtn = document.getElementById("downloadStatementBtn");
-        if (downloadBtn) {
-            const newBtn = downloadBtn.cloneNode(true);
-            downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
-            newBtn.addEventListener("click", downloadStatement);
-        }
+        const logoutBtn = document.getElementById("logoutBtnPortal"); if(logoutBtn) { const nb = logoutBtn.cloneNode(true); logoutBtn.parentNode.replaceChild(nb, logoutBtn); nb.addEventListener("click", handleLogout); }
+        const submitBtn = document.getElementById("submitTransferBtn"); if(submitBtn) { const nb = submitBtn.cloneNode(true); submitBtn.parentNode.replaceChild(nb, submitBtn); nb.addEventListener("click", handleTransferIn); }
+        const saveTelegram = document.getElementById("saveTelegramBtn"); if(saveTelegram) { const nb = saveTelegram.cloneNode(true); saveTelegram.parentNode.replaceChild(nb, saveTelegram); nb.addEventListener("click", handleSaveTelegram); }
+        const testTelegram = document.getElementById("testTelegramBtn"); if(testTelegram) { const nb = testTelegram.cloneNode(true); testTelegram.parentNode.replaceChild(nb, testTelegram); nb.addEventListener("click", sendTestMessage); }
+        const downloadBtn = document.getElementById("downloadStatementBtn"); if(downloadBtn) { const nb = downloadBtn.cloneNode(true); downloadBtn.parentNode.replaceChild(nb, downloadBtn); nb.addEventListener("click", downloadStatement); }
+        const copyRefBtn = document.getElementById("copyRefBtn"); if(copyRefBtn) { const nb = copyRefBtn.cloneNode(true); copyRefBtn.parentNode.replaceChild(nb, copyRefBtn); nb.addEventListener("click", () => { navigator.clipboard.writeText(getReferralLink()); showToast("Referral link copied!"); }); }
+        const copyLinkBtn = document.getElementById("copyLinkBtn"); if(copyLinkBtn) { const nb = copyLinkBtn.cloneNode(true); copyLinkBtn.parentNode.replaceChild(nb, copyLinkBtn); nb.addEventListener("click", () => { navigator.clipboard.writeText(getReferralLink()); showToast("Referral link copied!"); }); }
+        const shareWhatsApp = document.getElementById("shareWhatsApp"); if(shareWhatsApp) { const nb = shareWhatsApp.cloneNode(true); shareWhatsApp.parentNode.replaceChild(nb, shareWhatsApp); nb.addEventListener("click", () => { window.open(`https://wa.me/?text=${encodeURIComponent(`Join JamiiSim using my referral link: ${getReferralLink()} You'll get 50 bonus units!`)}`, '_blank'); }); }
+        const shareTelegram = document.getElementById("shareTelegram"); if(shareTelegram) { const nb = shareTelegram.cloneNode(true); shareTelegram.parentNode.replaceChild(nb, shareTelegram); nb.addEventListener("click", () => { window.open(`https://t.me/share/url?url=${encodeURIComponent(getReferralLink())}&text=${encodeURIComponent("Join JamiiSim and get 50 bonus units!")}`, '_blank'); }); }
+        const shareFacebook = document.getElementById("shareFacebook"); if(shareFacebook) { const nb = shareFacebook.cloneNode(true); shareFacebook.parentNode.replaceChild(nb, shareFacebook); nb.addEventListener("click", () => { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getReferralLink())}`, '_blank'); }); }
     }
     
     function renderTillsContent() {
-        if (customerTills.length === 0) return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No tills registered yet</div>';
-        
-        return `
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead><tr><th>Till Number</th><th>Store</th><th>Units</th><th>Status</th><th>Created</th></tr></thead>
-                    <tbody>
-                        ${customerTills.map(till => `
-                            <tr>
-                                <td><strong>${escapeHtml(till.tillNumber)}</strong></td>
-                                <td>${escapeHtml(till.storeNumber)}</td>
-                                <td><span style="font-weight:700;">${till.units || 0}</span></td>
-                                <td>${till.status === "active" ? '<span class="badge-active">Active</span>' : '<span class="badge-inactive">Inactive</span>'}</td>
-                                <td>${till.dateCreated ? new Date(till.dateCreated).toLocaleDateString() : '-'}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
+        if(customerTills.length === 0) return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No tills registered</div>';
+        return `<div class="table-wrapper"><table class="data-table"><thead><tr><th>Till</th><th>Store</th><th>Units</th><th>Status</th><th>Created</th></tr></thead><tbody>${customerTills.map(t => `<tr><td><strong>${escapeHtml(t.tillNumber)}</strong></td><td>${escapeHtml(t.storeNumber)}</div><td>${t.units || 0}</div><td>${t.status === "active" ? '<span class="badge-active"><i class="fas fa-check-circle"></i> Active</span>' : '<span class="badge-inactive"><i class="fas fa-clock"></i> Inactive</span>'}</div><td>${t.dateCreated ? new Date(t.dateCreated).toLocaleDateString() : '-'}</div></tr>`).join('')}</tbody></table></div>`;
     }
     
     function renderTransactionsContent() {
-        if (transferHistory.length === 0) return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No transactions yet</div>';
-        
-        return `
-            <div style="margin-bottom: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                <div style="background: linear-gradient(135deg, #1e4a3b, #0f3b2f); padding: 0.75rem 1rem; border-radius: 16px; color: white;">
-                    <div style="font-size: 1.3rem; font-weight: 700;">${totalUnitsReceived}</div>
-                    <div style="font-size: 0.7rem;">Total Units Received</div>
-                </div>
-                <div style="background: linear-gradient(135deg, #2c7a5e, #1e4a3b); padding: 0.75rem 1rem; border-radius: 16px; color: white;">
-                    <div style="font-size: 1.3rem; font-weight: 700;">${transactionCount}</div>
-                    <div style="font-size: 0.7rem;">Total Transactions</div>
-                </div>
-            </div>
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead><tr><th>Date</th><th>From</th><th>Units</th><th>Reason</th></tr></thead>
-                    <tbody>
-                        ${transferHistory.map(t => `
-                            <tr>
-                                <td>${new Date(t.date).toLocaleDateString()}</td>
-                                <td>${escapeHtml(t.fromPhone || 'Admin')}</td>
-                                <td><span class="badge-incoming">+${t.units}</span></td>
-                                <td>${escapeHtml(t.reason || '-')}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
+        if(transferHistory.length === 0) return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No transactions</div>';
+        return `<div class="table-wrapper"><table class="data-table"><thead><tr><th>Date</th><th>From</th><th>Units</th><th>Reason</th></tr></thead><tbody>${transferHistory.map(t => `<tr><td>${new Date(t.date).toLocaleDateString()} <small>${new Date(t.date).toLocaleTimeString()}</small></div><td>${escapeHtml(t.fromPhone || 'Admin')}</div><td><span class="badge-incoming"><i class="fas fa-arrow-down"></i> +${t.units}</span></div><td>${escapeHtml(t.reason || '-')}</div></tr>`).join('')}</tbody></table></div>`;
     }
     
     function renderTransferForm() {
-        if (customerTills.length === 0) return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No tills available</div>';
-        
-        return `
-            <div class="transfer-form">
-                <h3><i class="fas fa-arrow-down"></i> Transfer Units IN</h3>
-                <p style="text-align: center; margin-bottom: 1rem; font-size: 0.8rem; color: #5b6e69;">Add units to your till (Increases your balance)</p>
-                <select id="transferTill">
-                    <option value="">Select till...</option>
-                    ${customerTills.map(till => `
-                        <option value="${escapeHtml(till.tillNumber)}" data-current-units="${till.units || 0}" data-row="${till.rowIndex}">
-                            ${escapeHtml(till.tillNumber)} - Current: ${till.units || 0} units
-                        </option>
-                    `).join('')}
-                </select>
-                <input type="tel" id="senderPhone" placeholder="Sender Phone Number" value="ADMIN">
-                <input type="number" id="transferUnits" placeholder="Units to Add" min="1">
-                <input type="text" id="transferReason" placeholder="Reason (e.g., Top-up, Bonus)">
-                <button class="btn" id="submitTransferBtn"><i class="fas fa-plus-circle"></i> Add Units</button>
-                <div id="transferFeedback" class="feedback-message" style="display:none;"></div>
-                ${!isOnline ? '<p style="margin-top: 0.5rem; font-size: 0.7rem; color: #f59e0b;"><i class="fas fa-info-circle"></i> Offline. Transfer will sync when online.</p>' : ''}
-            </div>
-        `;
+        if(customerTills.length === 0) return '<div class="empty-state"><i class="fas fa-inbox"></i><br>No tills available</div>';
+        return `<div class="transfer-form"><h3><i class="fas fa-arrow-down"></i> Transfer Units IN</h3><p style="text-align:center;margin-bottom:1rem;font-size:0.8rem;color:#5b6e69;">Add units to your till - Increases your balance</p><select id="transferTill"><option value="">Select till...</option>${customerTills.map(t => `<option value="${escapeHtml(t.tillNumber)}" data-current-units="${t.units||0}" data-row="${t.rowIndex}">${escapeHtml(t.tillNumber)} - ${t.units||0} units</option>`).join('')}</select><input type="tel" id="senderPhone" placeholder="Sender Phone Number" value="ADMIN"><input type="number" id="transferUnits" placeholder="Units to Add" min="1"><input type="text" id="transferReason" placeholder="Reason (e.g., Top-up, Bonus)"><button class="btn" id="submitTransferBtn"><i class="fas fa-plus-circle"></i> Add Units</button><div id="transferFeedback" class="feedback-message" style="display:none;"></div>${!isOnline ? '<p style="margin-top:0.5rem;font-size:0.7rem;color:#f59e0b;"><i class="fas fa-info-circle"></i> You are offline. Transfer will be saved and synced when online.</p>' : ''}</div>`;
+    }
+    
+    function renderReferralsContent() {
+        const refLink = getReferralLink();
+        return `<div class="referral-hero"><h2><i class="fas fa-gift"></i> Invite Friends, Earn Rewards!</h2><p>Share your unique referral link with friends. When they join using your link, you both earn <strong>50 bonus units</strong>!</p><div class="reward-badge"><i class="fas fa-star"></i> <strong>50 UNITS BONUS</strong> per referral</div></div>
+        <div class="stats-grid-referral"><div class="stat-card-referral"><div class="stat-number-referral">${referralStats.invited}</div><div class="stat-label-referral">People Invited</div></div><div class="stat-card-referral"><div class="stat-number-referral">${referralStats.earnings}</div><div class="stat-label-referral">Bonus Units Earned</div></div><div class="stat-card-referral"><div class="stat-number-referral">${referralStats.invited * 50}</div><div class="stat-label-referral">Total Value (KES)</div></div></div>
+        <div class="referral-code-section"><div class="referral-label">YOUR REFERRAL CODE</div><div class="referral-code-box"><span class="referral-code">${referralCode || 'Loading...'}</span><button class="copy-btn" id="copyRefBtn"><i class="fas fa-copy"></i> Copy Code</button></div></div>
+        <div class="referral-code-section"><div class="referral-label">YOUR REFERRAL LINK</div><div class="referral-code-box"><span class="referral-link">${refLink}</span><button class="copy-btn" id="copyLinkBtn"><i class="fas fa-copy"></i> Copy Link</button></div><div class="share-buttons"><button class="share-btn share-wa" id="shareWhatsApp"><i class="fab fa-whatsapp"></i> WhatsApp</button><button class="share-btn share-tg" id="shareTelegram"><i class="fab fa-telegram"></i> Telegram</button><button class="share-btn share-fb" id="shareFacebook"><i class="fab fa-facebook-f"></i> Facebook</button></div></div>
+        <div class="referral-code-section"><h4 style="margin-bottom:1rem;"><i class="fas fa-users"></i> People You've Invited (${referralStats.invited})</h4>${renderInvitedList()}</div>`;
+    }
+    
+    function renderInvitedList() {
+        const allReferrals = JSON.parse(localStorage.getItem('all_referrals') || '[]');
+        const myReferrals = allReferrals.filter(r => r.referrer === currentCustomer.phone);
+        if(myReferrals.length === 0) return '<div class="empty-state"><i class="fas fa-user-plus"></i><br>No referrals yet. Share your link to get started!</div>';
+        return `<div class="table-wrapper"><table class="data-table"><thead><tr><th>Name</th><th>Phone</th><th>Date Joined</th><th>Bonus Earned</th></tr></thead><tbody>${myReferrals.map(r => `<tr><td>${escapeHtml(r.invitedName)}</div><td>${escapeHtml(r.invited)}</div><td>${new Date(r.date).toLocaleDateString()}</div><td><span class="badge-incoming">+${r.bonus} units</span></div></tr>`).join('')}</tbody></table></div>`;
     }
     
     function renderTelegramSettings() {
         const isConnected = customerTelegramId;
-        
-        return `
-            <div class="telegram-card">
-                <h3><i class="fab fa-telegram"></i> Telegram Notifications</h3>
-                <p>Connect your Telegram account to receive real-time notifications.</p>
-                
-                <div class="telegram-input-group">
-                    <input type="text" id="telegramUsername" placeholder="Your Telegram Username" value="${customerTelegramUsername || ''}">
-                    <button class="btn-telegram" id="saveTelegramBtn"><i class="fab fa-telegram"></i> Connect</button>
-                </div>
-                
-                <div class="telegram-status ${isConnected ? 'status-connected' : 'status-disconnected'}">
-                    <i class="fas ${isConnected ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-                    ${isConnected ? `Connected to @${customerTelegramUsername}` : 'Not connected'}
-                </div>
-                
-                ${isConnected ? `
-                <div style="margin-top: 1rem;">
-                    <button class="btn-telegram" id="testTelegramBtn"><i class="fas fa-paper-plane"></i> Send Test Message</button>
-                </div>
-                ` : ''}
-            </div>
-            
-            <div style="background: white; border-radius: 20px; padding: 1rem;">
-                <h4><i class="fas fa-info-circle"></i> How to connect:</h4>
-                <ol style="margin-left: 1.5rem; font-size: 0.8rem; line-height: 1.6;">
-                    <li>Message <strong>@${TELEGRAM_BOT_USERNAME}</strong> on Telegram</li>
-                    <li>Send <strong>/start</strong> to the bot</li>
-                    <li>Enter your username above and click Connect</li>
-                </ol>
-            </div>
-        `;
+        return `<div class="telegram-card"><h3><i class="fab fa-telegram"></i> Telegram Notifications</h3><p>Get real-time alerts on your phone for transfers and login activity.</p><div class="telegram-input-group"><input type="text" id="telegramUsername" placeholder="Your Telegram username (e.g., @username)" value="${customerTelegramUsername||''}"><button class="btn-telegram" id="saveTelegramBtn"><i class="fab fa-telegram"></i> Connect</button></div><div class="telegram-status ${isConnected?'status-connected':'status-disconnected'}"><i class="fas ${isConnected?'fa-check-circle':'fa-exclamation-circle'}"></i> ${isConnected ? `Connected to @${customerTelegramUsername}` : 'Not connected. Add your Telegram username above.'}</div>${isConnected ? `<div style="margin-top:1rem;"><button class="btn-telegram" id="testTelegramBtn"><i class="fas fa-paper-plane"></i> Send Test Message</button></div>` : ''}</div><div style="background:white;border-radius:20px;padding:1rem;"><h4><i class="fas fa-info-circle"></i> How to connect Telegram:</h4><ol style="margin-left:1.5rem;margin-top:0.5rem;line-height:1.6;"><li>Open Telegram and search for <strong>@${TELEGRAM_BOT_USERNAME}</strong></li><li>Start a chat and send <strong>/start</strong></li><li>Enter your Telegram username above and click Connect</li></ol></div>`;
     }
     
     function renderStatementContent() {
-        const totalUnits = customerTills.reduce((sum, t) => sum + (t.units || 0), 0);
-        
-        return `
-            <div class="transfer-form">
-                <h3><i class="fas fa-file-alt"></i> Account Statement</h3>
-                <div style="margin-bottom: 1rem; padding: 0.75rem; background: #f8fbf9; border-radius: 16px;">
-                    <p><strong>Name:</strong> ${escapeHtml(currentCustomer.name)}</p>
-                    <p><strong>Phone:</strong> ${escapeHtml(currentCustomer.phone)}</p>
-                    <p><strong>Tills:</strong> ${customerTills.length}</p>
-                    <p><strong>Current Units:</strong> ${totalUnits}</p>
-                    <p><strong>Units Received:</strong> ${totalUnitsReceived}</p>
-                    <p><strong>Transactions:</strong> ${transactionCount}</p>
-                </div>
-                <div class="table-wrapper">
-                    <table class="data-table">
-                        <thead><tr><th>Till</th><th>Store</th><th>Units</th><th>Status</th></tr></thead>
-                        <tbody>
-                            ${customerTills.map(t => `<tr><td>${escapeHtml(t.tillNumber)}</td><td>${escapeHtml(t.storeNumber)}</td><td>${t.units || 0}</td><td>${t.status}</td></tr>`).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                <button class="btn" id="downloadStatementBtn"><i class="fas fa-download"></i> Download Statement</button>
-            </div>
-        `;
+        const totalUnits = customerTills.reduce((s,t) => s + (t.units||0), 0);
+        const activeTills = customerTills.filter(t => t.status === "active").length;
+        return `<div class="statement-hero"><h2><i class="fas fa-file-alt"></i> Account Statement</h2><p>Your complete financial summary at a glance</p></div>
+        <div class="statement-summary"><div class="summary-card"><div class="summary-icon"><i class="fas fa-cash-register"></i></div><div class="summary-number">${customerTills.length}</div><div class="summary-label">Total Tills</div></div>
+        <div class="summary-card"><div class="summary-icon"><i class="fas fa-cubes"></i></div><div class="summary-number">${totalUnits}</div><div class="summary-label">Current Units</div></div>
+        <div class="summary-card"><div class="summary-icon"><i class="fas fa-check-circle"></i></div><div class="summary-number">${activeTills}</div><div class="summary-label">Active Tills</div></div>
+        <div class="summary-card"><div class="summary-icon"><i class="fas fa-gift"></i></div><div class="summary-number">${referralStats.earnings}</div><div class="summary-label">Bonus Units</div></div></div>
+        <div class="referral-code-section"><h4><i class="fas fa-user-circle"></i> Customer Information</h4><div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;"><div><strong>Name:</strong> ${escapeHtml(currentCustomer.name)}</div><div><strong>Phone:</strong> ${escapeHtml(currentCustomer.phone)}</div><div><strong>ID Number:</strong> ${escapeHtml(currentCustomer.idNumber)}</div><div><strong>Customer Since:</strong> ${currentCustomer.dateCreated ? new Date(currentCustomer.dateCreated).toLocaleDateString() : 'N/A'}</div></div></div>
+        <div class="table-wrapper" style="margin-top:1rem;"><table class="data-table"><thead><tr><th>Till Number</th><th>Store Number</th><th>Units</th><th>Status</th></tr></thead><tbody>${customerTills.map(t => `<tr><td><strong>${escapeHtml(t.tillNumber)}</strong></td><td>${escapeHtml(t.storeNumber)}</div><td>${t.units || 0}</div><td>${t.status === "active" ? "Active" : "Inactive"}</div></tr>`).join('')}</tbody></table></div>
+        <button class="btn" id="downloadStatementBtn" style="margin-top:1.5rem;"><i class="fas fa-download"></i> Download Full Statement (PDF)</button>`;
     }
     
     async function handleTransferIn() {
         const tillSelect = document.getElementById("transferTill");
-        const selectedOption = tillSelect.options[tillSelect.selectedIndex];
-        const tillNumber = tillSelect.value;
-        const rowIndex = selectedOption?.dataset.row;
-        const currentUnits = parseInt(selectedOption?.dataset.currentUnits || 0);
-        const senderPhone = document.getElementById("senderPhone").value.trim();
-        const units = parseInt(document.getElementById("transferUnits").value);
-        const reason = document.getElementById("transferReason")?.value.trim() || "Unit top-up";
+        const opt = tillSelect.options[tillSelect.selectedIndex];
+        const tillNumber = tillSelect.value, rowIndex = opt?.dataset.row, currentUnits = parseInt(opt?.dataset.currentUnits||0);
+        const senderPhone = document.getElementById("senderPhone").value.trim(), units = parseInt(document.getElementById("transferUnits").value), reason = document.getElementById("transferReason")?.value.trim() || "Top-up";
         const feedback = document.getElementById("transferFeedback");
+        if(!tillNumber || !units || units<=0) { feedback.style.display="block"; feedback.innerHTML='<i class="fas fa-exclamation-circle"></i> Please select till and valid units'; feedback.className="feedback-message feedback-error"; return; }
+        feedback.style.display="block"; feedback.innerHTML='<i class="fas fa-spinner fa-pulse"></i> Processing...'; feedback.className="feedback-message";
         
-        if (!tillNumber || !units || units <= 0) {
-            feedback.style.display = "block";
-            feedback.innerHTML = 'Please select a till and enter valid units';
-            feedback.className = "feedback-message feedback-error";
-            return;
-        }
-        
-        feedback.style.display = "block";
-        feedback.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Processing...';
-        feedback.className = "feedback-message";
-        
-        if (!isOnline) {
-            const pendingTransfer = { id: Date.now(), rowIndex: rowIndex, units: units, tillNumber: tillNumber };
-            const pending = JSON.parse(localStorage.getItem('pendingTransfers') || '[]');
-            pending.push(pendingTransfer);
+        if(!isOnline) {
+            const pending = JSON.parse(localStorage.getItem('pendingTransfers')||'[]');
+            pending.push({id:Date.now(), rowIndex, units, tillNumber});
             localStorage.setItem('pendingTransfers', JSON.stringify(pending));
-            
-            const tillIndex = customerTills.findIndex(t => t.tillNumber === tillNumber);
-            if (tillIndex !== -1) customerTills[tillIndex].units += units;
-            
-            const transferRecord = { id: Date.now(), tillNumber: tillNumber, fromPhone: senderPhone, units: units, reason: reason, date: new Date().toISOString(), pending: true };
-            transferHistory.unshift(transferRecord);
+            const idx = customerTills.findIndex(t=>t.tillNumber===tillNumber); if(idx!==-1) customerTills[idx].units += units;
+            transferHistory.unshift({id:Date.now(), tillNumber, fromPhone:senderPhone, units, reason, date:new Date().toISOString(), pending:true});
             localStorage.setItem(`transfers_in_${currentCustomer.phone}`, JSON.stringify(transferHistory));
-            
-            totalUnitsReceived += units;
-            transactionCount = transferHistory.length;
-            
-            feedback.innerHTML = `✓ Added ${units} units (Offline). Will sync when online.`;
-            feedback.className = "feedback-message feedback-success";
-            document.getElementById("transferUnits").value = "";
-            renderDashboard();
-            return;
+            totalUnitsReceived+=units; transactionCount=transferHistory.length;
+            feedback.innerHTML=`<i class="fas fa-check-circle"></i> Added ${units} units (Offline) - Will sync when online`; feedback.className="feedback-message feedback-success";
+            document.getElementById("transferUnits").value=""; renderDashboard(); return;
         }
         
-        const updateRes = await apiCall("updateUnits", { rowIndex: parseInt(rowIndex), addUnits: units });
-        
-        if (updateRes.success) {
-            const tillIndex = customerTills.findIndex(t => t.tillNumber === tillNumber);
-            if (tillIndex !== -1) customerTills[tillIndex].units += units;
-            
-            const transferRecord = { id: Date.now(), tillNumber: tillNumber, fromPhone: senderPhone, units: units, reason: reason, date: new Date().toISOString() };
-            transferHistory.unshift(transferRecord);
+        const res = await apiCall("updateUnits", { rowIndex: parseInt(rowIndex), addUnits: units });
+        if(res.success) {
+            const idx = customerTills.findIndex(t=>t.tillNumber===tillNumber); if(idx!==-1) customerTills[idx].units += units;
+            transferHistory.unshift({id:Date.now(), tillNumber, fromPhone:senderPhone, units, reason, date:new Date().toISOString()});
             localStorage.setItem(`transfers_in_${currentCustomer.phone}`, JSON.stringify(transferHistory));
-            
-            if (customerTelegramId) await notifyTransfer(tillNumber, units, currentUnits + units, senderPhone);
-            
-            totalUnitsReceived += units;
-            transactionCount = transferHistory.length;
-            
-            feedback.innerHTML = `✓ Success! Added ${units} units. New balance: ${currentUnits + units} units`;
-            feedback.className = "feedback-message feedback-success";
-            document.getElementById("transferUnits").value = "";
-            showToast(`Added ${units} units successfully!`);
-            renderDashboard();
-        } else {
-            feedback.innerHTML = `Failed: ${updateRes.error}`;
-            feedback.className = "feedback-message feedback-error";
-        }
+            if(customerTelegramId) await notifyTransfer(tillNumber, units, currentUnits+units);
+            totalUnitsReceived+=units; transactionCount=transferHistory.length;
+            feedback.innerHTML=`<i class="fas fa-check-circle"></i> Success! Added ${units} units. New balance: ${currentUnits+units} units`; feedback.className="feedback-message feedback-success";
+            document.getElementById("transferUnits").value=""; showToast(`Added ${units} units successfully!`); renderDashboard();
+        } else { feedback.innerHTML=`<i class="fas fa-exclamation-circle"></i> Failed: ${res.error}`; feedback.className="feedback-message feedback-error"; }
     }
     
     async function handleSaveTelegram() {
         const username = document.getElementById("telegramUsername").value.trim();
-        if (!username) { showToast("Please enter your Telegram username", true); return; }
-        
-        const cleanUsername = username.replace('@', '');
-        showToast("Verifying...");
-        
-        const result = await getChatIdFromUsername(cleanUsername);
-        if (result.success && result.chatId) {
-            saveTelegramUsername(cleanUsername, result.chatId);
-            await sendTelegramMessage(result.chatId, `🎉 Welcome! You'll now receive JamiiSim notifications.`);
-            showToast(`✅ Connected to @${cleanUsername}`);
+        if(!username) { showToast("Enter your Telegram username", true); return; }
+        const clean = username.replace('@','');
+        showToast("Verifying Telegram connection...");
+        const result = await getChatIdFromUsername(clean);
+        if(result.success) {
+            saveTelegramUsername(clean, result.chatId);
+            await sendTelegramMessage(result.chatId, `🎉 Welcome to JamiiSim, ${currentCustomer.name}! You'll now receive real-time notifications about transfers and account activity.`);
+            showToast(`✅ Connected to @${clean}! Test message sent.`);
             renderDashboard();
-        } else {
-            showToast(`❌ Send a message to @${TELEGRAM_BOT_USERNAME} first`, true);
-        }
+        } else { showToast(`❌ Send a message to @${TELEGRAM_BOT_USERNAME} on Telegram first, then try again.`, true); }
     }
     
     function downloadStatement() {
-        const totalUnits = customerTills.reduce((sum, t) => sum + (t.units || 0), 0);
-        let html = `<!DOCTYPE html><html><head><title>Statement</title><style>body{font-family:Arial;padding:2rem;}th{background:#1e4a3b;color:white;padding:8px;}td{padding:8px;border-bottom:1px solid #ddd;}</style></head><body>
-            <h1>JamiiSim Account Statement</h1>
-            <p><strong>Name:</strong> ${currentCustomer.name}</p>
-            <p><strong>Phone:</strong> ${currentCustomer.phone}</p>
-            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
-            <h3>Summary</h3>
-            <p>Tills: ${customerTills.length} | Units: ${totalUnits} | Received: ${totalUnitsReceived}</p>
-            <h3>Tills</h3>
-            <table><tr><th>Till</th><th>Store</th><th>Units</th><th>Status</th></tr>
-            ${customerTills.map(t => `<tr><td>${t.tillNumber}</td><td>${t.storeNumber}</td><td>${t.units || 0}</td><td>${t.status}</td></tr>`).join('')}</table>
-            <h3>Transactions</h3>
-            <table><tr><th>Date</th><th>From</th><th>Units</th><th>Reason</th></tr>
-            ${transferHistory.map(t => `<tr><td>${new Date(t.date).toLocaleString()}</td><td>${t.fromPhone}</td><td>+${t.units}</td><td>${t.reason}</td></tr>`).join('')}</table>
-            </body></html>`;
-        
-        const blob = new Blob([html], { type: 'text/html' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `JamiiSim_Statement_${currentCustomer.phone}.html`;
-        a.click();
-        URL.revokeObjectURL(blob);
-        showToast("Statement downloaded!");
+        const totalUnits = customerTills.reduce((s,t)=>s+(t.units||0),0);
+        let html = `<html><head><title>Statement - ${currentCustomer.name}</title><style>body{font-family:Arial;padding:2rem;}h1{color:#1e4a3b;}table{width:100%;border-collapse:collapse;margin:1rem 0;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background:#1e4a3b;color:white;}</style></head><body><h1>JamiiSim Network - Account Statement</h1><p><strong>Name:</strong> ${currentCustomer.name}</p><p><strong>Phone:</strong> ${currentCustomer.phone}</p><p><strong>ID:</strong> ${currentCustomer.idNumber}</p><p><strong>Date:</strong> ${new Date().toLocaleString()}</p><h3>Summary</h3><p>Total Tills: ${customerTills.length} | Current Units: ${totalUnits} | Active Tills: ${customerTills.filter(t=>t.status==="active").length}</p><p>Referrals: ${referralStats.invited} | Bonus Units Earned: ${referralStats.earnings}</p><h3>Till Details</h3></table><th>Till Number</th><th>Store Number</th><th>Units</th><th>Status</th></tr>${customerTills.map(t=>`<tr><td>${t.tillNumber}</td><td>${t.storeNumber}</td><td>${t.units||0}</td><td>${t.status}</td></tr>`).join('')}</table><h3>Transaction History</h3><table border="1"><tr><th>Date</th><th>From</th><th>Units</th><th>Reason</th></tr>${transferHistory.map(t=>`<tr><td>${new Date(t.date).toLocaleString()}</td><td>${t.fromPhone}</td><td>+${t.units}</td><td>${t.reason}</div></tr>`).join('')}</table><h3>Referral History</h3><table><th>Name</th><th>Phone</th><th>Date</th><th>Bonus</th></tr>${JSON.parse(localStorage.getItem('all_referrals')||'[]').filter(r=>r.referrer===currentCustomer.phone).map(r=>`<tr><td>${r.invitedName}</td><td>${r.invited}</td><td>${new Date(r.date).toLocaleDateString()}</td><td>+${r.bonus}</td></tr>`).join('')}</table><p style="margin-top:2rem;text-align:center;">Generated by JamiiSim Network</p></body></html>`;
+        const blob = new Blob([html],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`JamiiSim_Statement_${currentCustomer.phone}_${Date.now()}.html`; a.click(); URL.revokeObjectURL(blob); showToast("Statement downloaded!");
     }
     
     function initMobileMenu() {
-        const existingToggle = document.querySelector('.mobile-menu-toggle');
-        const existingOverlay = document.querySelector('.mobile-overlay');
-        if (existingToggle) existingToggle.remove();
-        if (existingOverlay) existingOverlay.remove();
-        
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'mobile-menu-toggle';
-        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-        toggleBtn.onclick = () => {
-            const sidebar = document.querySelector('.portal-sidebar');
-            const overlay = document.querySelector('.mobile-overlay');
-            if (mobileMenuOpen) {
-                sidebar?.classList.remove('open');
-                overlay?.classList.remove('show');
-                toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                mobileMenuOpen = false;
-            } else {
-                sidebar?.classList.add('open');
-                overlay?.classList.add('show');
-                toggleBtn.innerHTML = '<i class="fas fa-times"></i>';
-                mobileMenuOpen = true;
-            }
-        };
-        document.body.appendChild(toggleBtn);
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'mobile-overlay';
-        overlay.onclick = () => {
-            document.querySelector('.portal-sidebar')?.classList.remove('open');
-            overlay.classList.remove('show');
-            toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            mobileMenuOpen = false;
-        };
+        const existing = document.querySelector('.mobile-menu-toggle'); if(existing) existing.remove();
+        const toggle = document.createElement('button'); toggle.className='mobile-menu-toggle'; toggle.innerHTML='<i class="fas fa-bars"></i>';
+        toggle.onclick = () => { const sidebar=document.querySelector('.portal-sidebar'), overlay=document.querySelector('.mobile-overlay'); if(mobileMenuOpen) { sidebar?.classList.remove('open'); overlay?.classList.remove('show'); toggle.innerHTML='<i class="fas fa-bars"></i>'; mobileMenuOpen=false; } else { sidebar?.classList.add('open'); overlay?.classList.add('show'); toggle.innerHTML='<i class="fas fa-times"></i>'; mobileMenuOpen=true; } };
+        document.body.appendChild(toggle);
+        const overlay = document.createElement('div'); overlay.className='mobile-overlay'; overlay.onclick=()=>{ document.querySelector('.portal-sidebar')?.classList.remove('open'); overlay.classList.remove('show'); document.querySelector('.mobile-menu-toggle').innerHTML='<i class="fas fa-bars"></i>'; mobileMenuOpen=false; };
         document.body.appendChild(overlay);
     }
     
-    function switchTab(tab) {
-        currentTab = tab;
-        document.querySelectorAll('[id$="Content"]').forEach(el => el.style.display = 'none');
-        document.getElementById(`${tab}Content`).style.display = 'block';
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            if (btn.dataset.tab === tab) btn.classList.add('active');
-            else btn.classList.remove('active');
-        });
-        if (window.innerWidth <= 768) {
-            document.querySelector('.portal-sidebar')?.classList.remove('open');
-            document.querySelector('.mobile-overlay')?.classList.remove('show');
-            document.querySelector('.mobile-menu-toggle').innerHTML = '<i class="fas fa-bars"></i>';
-            mobileMenuOpen = false;
-        }
-    }
+    function switchTab(tab) { currentTab=tab; document.querySelectorAll('[id$="Content"]').forEach(el=>el.style.display='none'); document.getElementById(`${tab}Content`).style.display='block'; document.querySelectorAll('.nav-btn').forEach(btn=>{ if(btn.dataset.tab===tab) btn.classList.add('active'); else btn.classList.remove('active'); }); if(window.innerWidth<=768){ document.querySelector('.portal-sidebar')?.classList.remove('open'); document.querySelector('.mobile-overlay')?.classList.remove('show'); document.querySelector('.mobile-menu-toggle').innerHTML='<i class="fas fa-bars"></i>'; mobileMenuOpen=false; } }
     
-    function handleLogout() {
-        isLoggingOut = true;
-        currentCustomer = null;
-        customerTills = [];
-        transferHistory = [];
-        customerTelegramId = null;
-        customerTelegramUsername = null;
-        showToast("Logged out successfully");
-        renderLogin();
-        document.getElementById("loginBtn")?.addEventListener("click", handleLogin);
-    }
+    function handleLogout() { isLoggingOut=true; currentCustomer=null; customerTills=[]; transferHistory=[]; customerTelegramId=null; customerTelegramUsername=null; showToast("Logged out"); renderLogin(); document.getElementById("loginBtn")?.addEventListener("click", handleLogin); }
     
-    function render() {
-        const app = document.getElementById("app");
-        if (currentCustomer && !isLoggingOut) {
-            renderDashboard();
-        } else {
-            isLoggingOut = false;
-            app.innerHTML = renderLogin();
-            document.getElementById("loginBtn")?.addEventListener("click", handleLogin);
-        }
-    }
+    function render() { const app=document.getElementById("app"); if(currentCustomer && !isLoggingOut) renderDashboard(); else { isLoggingOut=false; app.innerHTML=renderLogin(); document.getElementById("loginBtn")?.addEventListener("click", handleLogin); } }
     
-    requestNotificationPermission();
     updateOnlineStatus();
     render();
 </script>
